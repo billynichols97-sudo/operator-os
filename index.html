@@ -5,160 +5,241 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operator OS</title>
   <style>
-    :root {
-      --bg: #0f1115;
-      --panel: #171a21;
-      --panel-2: #1f2430;
-      --line: #2b3242;
-      --text: #f3f5f7;
-      --muted: #97a0af;
-      --accent: #47c2a7;
-      --accent-2: #7c8cff;
-      --danger: #ff6b6b;
-      --warning: #ffb84d;
-      --success: #5dd39e;
-      --radius: 18px;
+    :root{
+      --bg:#0d1117;
+      --panel:#161b22;
+      --panel-2:#1f2630;
+      --border:#2d3748;
+      --text:#e6edf3;
+      --muted:#97a6ba;
+      --accent:#42d3b4;
+      --accent-2:#7c8cff;
+      --danger:#ff7b72;
+      --warn:#ffb454;
+      --success:#58d68d;
+      --radius:18px;
+      --shadow:0 12px 30px rgba(0,0,0,.25);
     }
 
-    * {
-      box-sizing: border-box;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(180deg,#0b0f14 0%,#111827 100%);
+      color:var(--text);
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #0b0d12 0%, #11151d 100%);
-      color: var(--text);
+    .app{
+      max-width:1200px;
+      margin:0 auto;
+      padding:20px;
     }
 
-    .app {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+    .hero,.card{
+      background:rgba(22,27,34,.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
 
-    .hero {
-      background: linear-gradient(135deg, #171a21 0%, #202636 100%);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 20px;
+    .hero{
+      padding:24px;
+      margin-bottom:20px;
+      background:linear-gradient(135deg,rgba(22,27,34,.98),rgba(30,38,50,.94));
     }
 
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 2rem;
+    .hero h1{
+      margin:0 0 8px;
+      font-size:2rem;
     }
 
-    .hero p {
-      margin: 0;
-      color: var(--muted);
+    .hero p{
+      margin:0;
+      color:var(--muted);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 20px;
+    .stats{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
     }
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      margin-bottom: 20px;
+    .stat{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
     }
 
-    .card h2 {
-      margin-top: 0;
-      font-size: 1.1rem;
+    .stat-label{
+      color:var(--muted);
+      font-size:.82rem;
+      margin-bottom:8px;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 16px;
+    .stat-value{
+      font-weight:700;
+      font-size:1.5rem;
     }
 
-    .stat {
-      background: var(--panel-2);
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid var(--line);
+    .layout{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:20px;
     }
 
-    .stat-label {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 8px;
+    .card{
+      padding:18px;
+      margin-bottom:20px;
     }
 
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: bold;
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.1rem;
     }
 
-    .task-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 14px;
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
     }
 
-    .task {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
+    .form-grid.full{
+      grid-template-columns:1fr;
     }
 
-    .task-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 8px;
+    label{
+      display:block;
+      font-size:.9rem;
+      margin-bottom:6px;
+      color:var(--muted);
     }
 
-    .badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: bold;
+    input,select,textarea,button{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#0f141b;
+      color:var(--text);
+      padding:12px;
+      font:inherit;
     }
 
-    .high { background: rgba(255, 107, 107, 0.15); color: #ff8c8c; }
-    .medium { background: rgba(255, 184, 77, 0.15); color: #ffc46b; }
-    .low { background: rgba(93, 211, 158, 0.15); color: #7ce0b0; }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.92rem;
+    textarea{
+      min-height:90px;
+      resize:vertical;
     }
 
-    .mini-list {
-      padding-left: 18px;
-      color: var(--muted);
+    button{
+      background:var(--accent);
+      color:#08120f;
+      font-weight:700;
+      cursor:pointer;
+      border:none;
     }
 
-    .mini-list li {
-      margin-bottom: 8px;
+    button:hover{
+      opacity:.95;
     }
 
-    .footer-note {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.9rem;
+    .secondary-btn{
+      background:#273142;
+      color:var(--text);
+      border:1px solid var(--border);
+      margin-top:10px;
     }
 
-    @media (max-width: 860px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
+    .task-list,.workout-list{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
 
-      .stats {
-        grid-template-columns: 1fr;
-      }
+    .task,.workout{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .task h3,.workout h3{
+      margin:0 0 6px;
+      font-size:1rem;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .high{background:rgba(255,123,114,.15);color:#ff9a94}
+    .medium{background:rgba(255,180,84,.15);color:#ffc97a}
+    .low{background:rgba(88,214,141,.15);color:#89e6ae}
+
+    .pill{
+      display:inline-block;
+      margin-top:8px;
+      margin-right:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#202938;
+      color:var(--muted);
+      font-size:.8rem;
+      border:1px solid var(--border);
+    }
+
+    .empty{
+      color:var(--muted);
+      font-size:.95rem;
+      padding:4px 0;
+    }
+
+    .small{
+      font-size:.84rem;
+      color:var(--muted);
+    }
+
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:16px 0;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    @media (max-width: 900px){
+      .layout{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .form-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 560px){
+      .stats{grid-template-columns:1fr}
+      .app{padding:14px}
+      .hero,.card{padding:16px}
     }
   </style>
 </head>
@@ -166,40 +247,409 @@
   <div class="app">
     <section class="hero">
       <h1>Operator OS</h1>
-      <p>Your personal planner, task tracker, and workout command center.</p>
+      <p>Your personal command center for tasks, workouts, priorities, and momentum.</p>
 
       <div class="stats">
         <div class="stat">
-          <div class="stat-label">Top Priorities</div>
-          <div class="stat-value">3</div>
+          <div class="stat-label">Total Tasks</div>
+          <div class="stat-value" id="totalTasks">0</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Tasks Due Today</div>
-          <div class="stat-value">5</div>
+          <div class="stat-label">High Priority</div>
+          <div class="stat-value" id="highTasks">0</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Workout Streak</div>
-          <div class="stat-value">4</div>
+          <div class="stat-label">Workouts Logged</div>
+          <div class="stat-value" id="workoutCount">0</div>
         </div>
+        <div class="stat">
+          <div class="stat-label">Top Score</div>
+          <div class="stat-value" id="topScore">0</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button onclick="seedDemoData()">Load Demo Data</button>
+        <button class="secondary-btn" onclick="clearAllData()">Clear All Data</button>
       </div>
     </section>
 
-    <div class="grid">
+    <div class="layout">
       <div>
         <section class="card">
-          <h2>Today’s Focus</h2>
-          <div class="task-list">
-            <div class="task">
-              <div class="task-top">
-                <strong>Finish Etsy product draft</strong>
-                <span class="badge high">High</span>
-              </div>
-              <div class="muted">Outlet: Etsy • Category: Product • Time: 45 min</div>
+          <h2 class="section-title">Add Task</h2>
+
+          <div class="form-grid">
+            <div>
+              <label for="taskTitle">Task title</label>
+              <input id="taskTitle" placeholder="Finish Etsy draft" />
             </div>
 
-            <div class="task">
-              <div class="task-top">
-                <strong>Send automation outreach</strong>
-                <span class="badge high">High</span>
-              </div>
-              <div class="muted">Outlet: AI Services • Category: Leads • 
+            <div>
+              <label for="taskOutlet">Outlet</label>
+              <select id="taskOutlet">
+                <option>Etsy</option>
+                <option>AI Services</option>
+                <option>Content</option>
+                <option>Fitness</option>
+                <option>Personal</option>
+                <option>School</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="taskImpact">Impact (1-5)</label>
+              <select id="taskImpact">
+                <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="taskUrgency">Urgency (1-5)</label>
+              <select id="taskUrgency">
+                <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="taskRevenue">Revenue Value (1-5)</label>
+              <select id="taskRevenue">
+                <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="taskEffort">Effort (1-5)</label>
+              <select id="taskEffort">
+                <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid full" style="margin-top:12px;">
+            <div>
+              <label for="taskNotes">Notes</label>
+              <textarea id="taskNotes" placeholder="Anything important about this task..."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button onclick="addTask()">Save Task</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Task List</h2>
+          <div id="taskList" class="task-list"></div>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <h2 class="section-title">Log Workout</h2>
+
+          <div class="form-grid">
+            <div>
+              <label for="workoutType">Workout type</label>
+              <input id="workoutType" placeholder="Back + Biceps" />
+            </div>
+
+            <div>
+              <label for="workoutDuration">Minutes</label>
+              <input id="workoutDuration" type="number" placeholder="60" />
+            </div>
+          </div>
+
+          <div class="form-grid full" style="margin-top:12px;">
+            <div>
+              <label for="workoutNotes">Workout notes</label>
+              <textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button onclick="addWorkout()">Save Workout</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Workout Log</h2>
+          <div id="workoutList" class="workout-list"></div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Priority Formula</h2>
+          <div class="meta">
+            Score = (Impact × 2) + Urgency + Revenue Value - Effort
+          </div>
+          <div class="divider"></div>
+          <div class="small">
+            This helps push meaningful money-making and high-leverage tasks above random busywork.
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "operatorOSDataV2";
+
+    let state = {
+      tasks: [],
+      workouts: []
+    };
+
+    function safeLoad() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          state = JSON.parse(saved);
+        }
+      } catch (error) {
+        console.log("Storage unavailable", error);
+      }
+    }
+
+    function safeSave() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        alert("Could not save data in this browser right now.");
+      }
+    }
+
+    function getPriorityLabel(score) {
+      if (score >= 10) return "High";
+      if (score >= 7) return "Medium";
+      return "Low";
+    }
+
+    function addTask() {
+      const title = document.getElementById("taskTitle").value.trim();
+      const outlet = document.getElementById("taskOutlet").value;
+      const impact = Number(document.getElementById("taskImpact").value);
+      const urgency = Number(document.getElementById("taskUrgency").value);
+      const revenue = Number(document.getElementById("taskRevenue").value);
+      const effort = Number(document.getElementById("taskEffort").value);
+      const notes = document.getElementById("taskNotes").value.trim();
+
+      if (!title) {
+        alert("Please enter a task title.");
+        return;
+      }
+
+      const score = (impact * 2) + urgency + revenue - effort;
+      const priority = getPriorityLabel(score);
+
+      state.tasks.unshift({
+        id: Date.now(),
+        title,
+        outlet,
+        impact,
+        urgency,
+        revenue,
+        effort,
+        notes,
+        score,
+        priority
+      });
+
+      safeSave();
+      renderAll();
+      clearTaskForm();
+    }
+
+    function addWorkout() {
+      const type = document.getElementById("workoutType").value.trim();
+      const duration = document.getElementById("workoutDuration").value.trim();
+      const notes = document.getElementById("workoutNotes").value.trim();
+
+      if (!type) {
+        alert("Please enter a workout type.");
+        return;
+      }
+
+      state.workouts.unshift({
+        id: Date.now(),
+        type,
+        duration: duration || "0",
+        notes
+      });
+
+      safeSave();
+      renderAll();
+      clearWorkoutForm();
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(task => task.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteWorkout(id) {
+      state.workouts = state.workouts.filter(workout => workout.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function clearTaskForm() {
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskNotes").value = "";
+      document.getElementById("taskImpact").value = "3";
+      document.getElementById("taskUrgency").value = "3";
+      document.getElementById("taskRevenue").value = "3";
+      document.getElementById("taskEffort").value = "3";
+    }
+
+    function clearWorkoutForm() {
+      document.getElementById("workoutType").value = "";
+      document.getElementById("workoutDuration").value = "";
+      document.getElementById("workoutNotes").value = "";
+    }
+
+    function clearAllData() {
+      const confirmed = confirm("Clear all tasks and workouts?");
+      if (!confirmed) return;
+
+      state = { tasks: [], workouts: [] };
+      safeSave();
+      renderAll();
+    }
+
+    function seedDemoData() {
+      state.tasks = [
+        {
+          id: Date.now() + 1,
+          title: "Finish Etsy wellness planner listing",
+          outlet: "Etsy",
+          impact: 5,
+          urgency: 4,
+          revenue: 5,
+          effort: 2,
+          notes: "Need title, thumbnails, and description cleanup.",
+          score: 17,
+          priority: "High"
+        },
+        {
+          id: Date.now() + 2,
+          title: "Send 5 automation outreach messages",
+          outlet: "AI Services",
+          impact: 5,
+          urgency: 5,
+          revenue: 5,
+          effort: 3,
+          notes: "Prioritize local businesses and agencies.",
+          score: 17,
+          priority: "High"
+        },
+        {
+          id: Date.now() + 3,
+          title: "Batch 3 short-form content ideas",
+          outlet: "Content",
+          impact: 3,
+          urgency: 3,
+          revenue: 3,
+          effort: 2,
+          notes: "Focus on AI + business automation hooks.",
+          score: 10,
+          priority: "High"
+        }
+      ];
+
+      state.workouts = [
+        {
+          id: Date.now() + 4,
+          type: "Back + Biceps",
+          duration: "60",
+          notes: "Rows, pulldowns, curls, core finisher."
+        },
+        {
+          id: Date.now() + 5,
+          type: "Kettlebell Flow",
+          duration: "25",
+          notes: "Mobility and conditioning."
+        }
+      ];
+
+      safeSave();
+      renderAll();
+    }
+
+    function renderStats() {
+      document.getElementById("totalTasks").textContent = state.tasks.length;
+      document.getElementById("highTasks").textContent = state.tasks.filter(t => t.priority === "High").length;
+      document.getElementById("workoutCount").textContent = state.workouts.length;
+      const top = state.tasks.length ? Math.max(...state.tasks.map(t => t.score)) : 0;
+      document.getElementById("topScore").textContent = top;
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById("taskList");
+      if (!state.tasks.length) {
+        taskList.innerHTML = '<div class="empty">No tasks yet. Add your first one above.</div>';
+        return;
+      }
+
+      const sortedTasks = [...state.tasks].sort((a, b) => b.score - a.score);
+
+      taskList.innerHTML = sortedTasks.map(task => `
+        <div class="task">
+          <div class="row">
+            <div>
+              <h3>${task.title}</h3>
+              <div class="meta">Outlet: ${task.outlet}</div>
+            </div>
+            <span class="badge ${task.priority.toLowerCase()}">${task.priority}</span>
+          </div>
+
+          <div class="meta">
+            Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}
+          </div>
+
+          ${task.notes ? `<div class="pill">${task.notes}</div>` : ""}
+
+          <div style="margin-top:10px;">
+            <button class="secondary-btn" onclick="deleteTask(${task.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWorkouts() {
+      const workoutList = document.getElementById("workoutList");
+      if (!state.workouts.length) {
+        workoutList.innerHTML = '<div class="empty">No workouts logged yet.</div>';
+        return;
+      }
+
+      workoutList.innerHTML = state.workouts.map(workout => `
+        <div class="workout">
+          <div class="row">
+            <div>
+              <h3>${workout.type}</h3>
+              <div class="meta">Duration: ${workout.duration} min</div>
+            </div>
+            <span class="badge low">Logged</span>
+          </div>
+
+          ${workout.notes ? `<div class="pill">${workout.notes}</div>` : ""}
+
+          <div style="margin-top:10px;">
+            <button class="secondary-btn" onclick="deleteWorkout(${workout.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderStats();
+      renderTasks();
+      renderWorkouts();
+    }
+
+    safeLoad();
+    renderAll();
+  </script>
+</body>
+</html>
