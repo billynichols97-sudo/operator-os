@@ -22,6 +22,7 @@
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family:Arial,sans-serif;
@@ -35,8 +36,8 @@
       padding:20px;
     }
 
-    .hero,.card{
-      background:rgba(22,27,34,.92);
+    .hero,.panel,details.card{
+      background:rgba(22,27,34,.94);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -61,6 +62,841 @@
     .stats{
       margin-top:18px;
       display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:12px;
+    }
+
+    .stat{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .stat-label{
+      color:var(--muted);
+      font-size:.82rem;
+      margin-bottom:8px;
+    }
+
+    .stat-value{
+      font-size:1.45rem;
+      font-weight:700;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.12fr .88fr;
+      gap:20px;
+    }
+
+    details.card{
+      margin-bottom:20px;
+      overflow:hidden;
+    }
+
+    details[open] summary{
+      border-bottom:1px solid var(--border);
+    }
+
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:18px;
+      font-weight:700;
+      font-size:1.05rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .summary-right{
+      color:var(--muted);
+      font-size:.85rem;
+      font-weight:400;
+    }
+
+    .card-content{
+      padding:18px;
+    }
+
+    .panel{
+      padding:18px;
+      margin-bottom:20px;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.08rem;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+
+    .form-grid.full{
+      grid-template-columns:1fr;
+    }
+
+    label{
+      display:block;
+      font-size:.9rem;
+      margin-bottom:6px;
+      color:var(--muted);
+    }
+
+    input,select,textarea,button{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#0f141b;
+      color:var(--text);
+      padding:12px;
+      font:inherit;
+    }
+
+    textarea{
+      min-height:88px;
+      resize:vertical;
+    }
+
+    button{
+      background:var(--accent);
+      color:#08120f;
+      font-weight:700;
+      cursor:pointer;
+      border:none;
+    }
+
+    button:hover{
+      opacity:.96;
+    }
+
+    .secondary-btn{
+      background:#273142;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .danger-btn{
+      background:#3a2023;
+      color:#ffd7d4;
+      border:1px solid #5c2b31;
+    }
+
+    .task-list,.workout-list{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .task,.workout{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .task h3,.workout h3{
+      margin:0 0 6px;
+      font-size:1rem;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .high{background:rgba(255,123,114,.15);color:#ff9a94}
+    .medium{background:rgba(255,180,84,.15);color:#ffc97a}
+    .low{background:rgba(88,214,141,.15);color:#89e6ae}
+    .done{background:rgba(88,214,141,.18);color:#8ff0b3}
+
+    .pill{
+      display:inline-block;
+      margin-top:8px;
+      margin-right:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#202938;
+      color:var(--muted);
+      font-size:.8rem;
+      border:1px solid var(--border);
+    }
+
+    .empty{
+      color:var(--muted);
+      font-size:.95rem;
+      padding:4px 0;
+    }
+
+    .small{
+      font-size:.84rem;
+      color:var(--muted);
+    }
+
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:16px 0;
+    }
+
+    .top-actions,.filters,.button-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .top-actions{margin-top:14px}
+    .filters{margin-top:12px}
+
+    .filter-chip{
+      width:auto;
+      padding:10px 12px;
+      background:#202938;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:999px;
+      cursor:pointer;
+      font-size:.88rem;
+    }
+
+    .filter-chip.active{
+      background:var(--accent);
+      color:#07120f;
+      border-color:transparent;
+      font-weight:700;
+    }
+
+    .checkbox-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .checkbox-row input{
+      width:auto;
+      transform:scale(1.2);
+    }
+
+    .completed-task{
+      opacity:.72;
+    }
+
+    .completed-task h3{
+      text-decoration:line-through;
+    }
+
+    .due-soon{
+      color:#ffd18a;
+    }
+
+    .overdue{
+      color:#ff9a94;
+    }
+
+    @media (max-width: 920px){
+      .layout{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .form-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 560px){
+      .stats{grid-template-columns:1fr}
+      .app{padding:14px}
+      .hero,.panel{padding:16px}
+      summary,.card-content{padding:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <h1>Operator OS</h1>
+      <p>Your personal command center for tasks, workouts, priorities, and momentum.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Open Tasks</div>
+          <div class="stat-value" id="openTasks">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="completedTasks">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">High Priority</div>
+          <div class="stat-value" id="highTasks">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Workouts Logged</div>
+          <div class="stat-value" id="workoutCount">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Top Score</div>
+          <div class="stat-value" id="topScore">0</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button onclick="seedDemoData()">Load Demo Data</button>
+        <button class="danger-btn" onclick="clearAllData()">Clear All Data</button>
+      </div>
+    </section>
+
+    <div class="layout">
+      <div>
+        <details class="card" open>
+          <summary>
+            <span>Add Task</span>
+            <span class="summary-right">Create priority-ranked tasks</span>
+          </summary>
+          <div class="card-content">
+            <div class="form-grid">
+              <div>
+                <label for="taskTitle">Task title</label>
+                <input id="taskTitle" placeholder="Finish Etsy draft" />
+              </div>
+
+              <div>
+                <label for="taskOutlet">Outlet</label>
+                <select id="taskOutlet">
+                  <option>Etsy</option>
+                  <option>AI Services</option>
+                  <option>Content</option>
+                  <option>Fitness</option>
+                  <option>Personal</option>
+                  <option>School</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="taskDueDate">Due date</label>
+                <input id="taskDueDate" type="date" />
+              </div>
+
+              <div>
+                <label for="taskImpact">Impact (1-5)</label>
+                <select id="taskImpact">
+                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="taskUrgency">Urgency (1-5)</label>
+                <select id="taskUrgency">
+                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="taskRevenue">Revenue Value (1-5)</label>
+                <select id="taskRevenue">
+                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="taskEffort">Effort (1-5)</label>
+                <select id="taskEffort">
+                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="taskStatus">Starting status</label>
+                <select id="taskStatus">
+                  <option value="open" selected>Open</option>
+                  <option value="done">Completed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid full" style="margin-top:12px;">
+              <div>
+                <label for="taskNotes">Notes</label>
+                <textarea id="taskNotes" placeholder="Anything important about this task..."></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <button onclick="addTask()">Save Task</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            <span>Task List</span>
+            <span class="summary-right">Filter and manage tasks</span>
+          </summary>
+          <div class="card-content">
+            <div class="filters" id="outletFilters"></div>
+            <div class="filters" id="statusFilters"></div>
+            <div id="taskList" class="task-list"></div>
+          </div>
+        </details>
+      </div>
+
+      <div>
+        <details class="card" open>
+          <summary>
+            <span>Log Workout</span>
+            <span class="summary-right">Track sessions quickly</span>
+          </summary>
+          <div class="card-content">
+            <div class="form-grid">
+              <div>
+                <label for="workoutType">Workout type</label>
+                <input id="workoutType" placeholder="Back + Biceps" />
+              </div>
+
+              <div>
+                <label for="workoutDuration">Minutes</label>
+                <input id="workoutDuration" type="number" placeholder="60" />
+              </div>
+            </div>
+
+            <div class="form-grid full" style="margin-top:12px;">
+              <div>
+                <label for="workoutNotes">Workout notes</label>
+                <textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <button onclick="addWorkout()">Save Workout</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            <span>Workout Log</span>
+            <span class="summary-right">Recent entries</span>
+          </summary>
+          <div class="card-content">
+            <div id="workoutList" class="workout-list"></div>
+          </div>
+        </details>
+
+        <div class="panel">
+          <h2 class="section-title">Priority Formula</h2>
+          <div class="meta">
+            Score = (Impact × 2) + Urgency + Revenue Value - Effort
+          </div>
+          <div class="divider"></div>
+          <div class="small">
+            This keeps high-leverage tasks above random busywork and gives you a fast way to decide what matters first. 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "operatorOSDataV3";
+
+    let state = {
+      tasks: [],
+      workouts: [],
+      filters: {
+        outlet: "All",
+        status: "Open"
+      }
+    };
+
+    function safeLoad() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = {
+            tasks: parsed.tasks || [],
+            workouts: parsed.workouts || [],
+            filters: parsed.filters || { outlet: "All", status: "Open" }
+          };
+        }
+      } catch (error) {
+        console.log("Storage unavailable", error);
+      }
+    }
+
+    function safeSave() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        alert("Could not save data in this browser right now.");
+      }
+    }
+
+    function getPriorityLabel(score) {
+      if (score >= 10) return "High";
+      if (score >= 7) return "Medium";
+      return "Low";
+    }
+
+    function formatDueStatus(dateString, isDone) {
+      if (!dateString || isDone) return "";
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const due = new Date(dateString + "T00:00:00");
+
+      const diff = Math.round((due - today) / (1000 * 60 * 60 * 24));
+
+      if (diff < 0) return '<span class="overdue">Overdue</span>';
+      if (diff === 0) return '<span class="due-soon">Due today</span>';
+      if (diff === 1) return '<span class="due-soon">Due tomorrow</span>';
+      return 'Due in ' + diff + ' days';
+    }
+
+    function addTask() {
+      const title = document.getElementById("taskTitle").value.trim();
+      const outlet = document.getElementById("taskOutlet").value;
+      const dueDate = document.getElementById("taskDueDate").value;
+      const impact = Number(document.getElementById("taskImpact").value);
+      const urgency = Number(document.getElementById("taskUrgency").value);
+      const revenue = Number(document.getElementById("taskRevenue").value);
+      const effort = Number(document.getElementById("taskEffort").value);
+      const status = document.getElementById("taskStatus").value;
+      const notes = document.getElementById("taskNotes").value.trim();
+
+      if (!title) {
+        alert("Please enter a task title.");
+        return;
+      }
+
+      const score = (impact * 2) + urgency + revenue - effort;
+      const priority = getPriorityLabel(score);
+
+      state.tasks.unshift({
+        id: Date.now(),
+        title,
+        outlet,
+        dueDate,
+        impact,
+        urgency,
+        revenue,
+        effort,
+        notes,
+        score,
+        priority,
+        done: status === "done"
+      });
+
+      safeSave();
+      renderAll();
+      clearTaskForm();
+    }
+
+    function addWorkout() {
+      const type = document.getElementById("workoutType").value.trim();
+      const duration = document.getElementById("workoutDuration").value.trim();
+      const notes = document.getElementById("workoutNotes").value.trim();
+
+      if (!type) {
+        alert("Please enter a workout type.");
+        return;
+      }
+
+      state.workouts.unshift({
+        id: Date.now(),
+        type,
+        duration: duration || "0",
+        notes
+      });
+
+      safeSave();
+      renderAll();
+      clearWorkoutForm();
+    }
+
+    function toggleTaskDone(id) {
+      const task = state.tasks.find(t => t.id === id);
+      if (!task) return;
+      task.done = !task.done;
+      safeSave();
+      renderAll();
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(task => task.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteWorkout(id) {
+      state.workouts = state.workouts.filter(workout => workout.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function clearTaskForm() {
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskDueDate").value = "";
+      document.getElementById("taskNotes").value = "";
+      document.getElementById("taskImpact").value = "3";
+      document.getElementById("taskUrgency").value = "3";
+      document.getElementById("taskRevenue").value = "3";
+      document.getElementById("taskEffort").value = "3";
+      document.getElementById("taskStatus").value = "open";
+      document.getElementById("taskOutlet").value = "Etsy";
+    }
+
+    function clearWorkoutForm() {
+      document.getElementById("workoutType").value = "";
+      document.getElementById("workoutDuration").value = "";
+      document.getElementById("workoutNotes").value = "";
+    }
+
+    function clearAllData() {
+      const confirmed = confirm("Clear all tasks and workouts?");
+      if (!confirmed) return;
+      state = {
+        tasks: [],
+        workouts: [],
+        filters: {
+          outlet: "All",
+          status: "Open"
+        }
+      };
+      safeSave();
+      renderAll();
+    }
+
+    function setOutletFilter(outlet) {
+      state.filters.outlet = outlet;
+      safeSave();
+      renderAll();
+    }
+
+    function setStatusFilter(status) {
+      state.filters.status = status;
+      safeSave();
+      renderAll();
+    }
+
+    function getFilteredTasks() {
+      return [...state.tasks]
+        .filter(task => {
+          const outletMatch = state.filters.outlet === "All" || task.outlet === state.filters.outlet;
+          const statusMatch =
+            state.filters.status === "All" ||
+            (state.filters.status === "Open" && !task.done) ||
+            (state.filters.status === "Completed" && task.done);
+          return outletMatch && statusMatch;
+        })
+        .sort((a, b) => {
+          if (a.done !== b.done) return a.done - b.done;
+          return b.score - a.score;
+        });
+    }
+
+    function renderStats() {
+      const open = state.tasks.filter(t => !t.done).length;
+      const completed = state.tasks.filter(t => t.done).length;
+      const high = state.tasks.filter(t => !t.done && t.priority === "High").length;
+      const top = state.tasks.length ? Math.max(...state.tasks.map(t => t.score)) : 0;
+
+      document.getElementById("openTasks").textContent = open;
+      document.getElementById("completedTasks").textContent = completed;
+      document.getElementById("highTasks").textContent = high;
+      document.getElementById("workoutCount").textContent = state.workouts.length;
+      document.getElementById("topScore").textContent = top;
+    }
+
+    function renderOutletFilters() {
+      const container = document.getElementById("outletFilters");
+      const outlets = ["All", ...new Set(state.tasks.map(task => task.outlet))];
+
+      container.innerHTML = outlets.map(outlet => `
+        <button
+          class="filter-chip ${state.filters.outlet === outlet ? 'active' : ''}"
+          onclick="setOutletFilter('${outlet.replace(/'/g, "\\'")}')"
+        >${outlet}</button>
+      `).join("");
+    }
+
+    function renderStatusFilters() {
+      const container = document.getElementById("statusFilters");
+      const statuses = ["Open", "Completed", "All"];
+
+      container.innerHTML = statuses.map(status => `
+        <button
+          class="filter-chip ${state.filters.status === status ? 'active' : ''}"
+          onclick="setStatusFilter('${status}')"
+        >${status}</button>
+      `).join("");
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById("taskList");
+      const filteredTasks = getFilteredTasks();
+
+      if (!filteredTasks.length) {
+        taskList.innerHTML = '<div class="empty">No tasks match your current filters.</div>';
+        return;
+      }
+
+      taskList.innerHTML = filteredTasks.map(task => `
+        <div class="task ${task.done ? 'completed-task' : ''}">
+          <div class="row">
+            <div>
+              <h3>${task.title}</h3>
+              <div class="meta">Outlet: ${task.outlet}${task.dueDate ? " • Due: " + task.dueDate : ""}</div>
+              <div class="meta">${formatDueStatus(task.dueDate, task.done)}</div>
+            </div>
+            <span class="badge ${task.done ? 'done' : task.priority.toLowerCase()}">${task.done ? 'Done' : task.priority}</span>
+          </div>
+
+          <div class="meta">
+            Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}
+          </div>
+
+          ${task.notes ? `<div class="pill">${task.notes}</div>` : ""}
+
+          <div class="checkbox-row">
+            <input type="checkbox" ${task.done ? "checked" : ""} onchange="toggleTaskDone(${task.id})" />
+            <span class="small">${task.done ? "Completed" : "Mark as completed"}</span>
+          </div>
+
+          <div class="button-row" style="margin-top:10px;">
+            <button class="secondary-btn" onclick="toggleTaskDone(${task.id})">${task.done ? "Reopen" : "Complete"}</button>
+            <button class="danger-btn" onclick="deleteTask(${task.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWorkouts() {
+      const workoutList = document.getElementById("workoutList");
+      if (!state.workouts.length) {
+        workoutList.innerHTML = '<div class="empty">No workouts logged yet.</div>';
+        return;
+      }
+
+      workoutList.innerHTML = state.workouts.map(workout => `
+        <div class="workout">
+          <div class="row">
+            <div>
+              <h3>${workout.type}</h3>
+              <div class="meta">Duration: ${workout.duration} min</div>
+            </div>
+            <span class="badge low">Logged</span>
+          </div>
+
+          ${workout.notes ? `<div class="pill">${workout.notes}</div>` : ""}
+
+          <div class="button-row" style="margin-top:10px;">
+            <button class="danger-btn" onclick="deleteWorkout(${workout.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function seedDemoData() {
+      state.tasks = [
+        {
+          id: Date.now() + 1,
+          title: "Finish Etsy wellness planner listing",
+          outlet: "Etsy",
+          dueDate: "2026-04-10",
+          impact: 5,
+          urgency: 4,
+          revenue: 5,
+          effort: 2,
+          notes: "Need title, thumbnails, and description cleanup.",
+          score: 17,
+          priority: "High",
+          done: false
+        },
+        {
+          id: Date.now() + 2,
+          title: "Send 5 automation outreach messages",
+          outlet: "AI Services",
+          dueDate: "2026-04-09",
+          impact: 5,
+          urgency: 5,
+          revenue: 5,
+          effort: 3,
+          notes: "Prioritize local businesses and agencies.",
+          score: 17,
+          priority: "High",
+          done: false
+        },
+        {
+          id: Date.now() + 3,
+          title: "Batch 3 short-form content ideas",
+          outlet: "Content",
+          dueDate: "2026-04-12",
+          impact: 3,
+          urgency: 3,
+          revenue: 3,
+          effort: 2,
+          notes: "Focus on AI + business automation hooks.",
+          score: 10,
+          priority: "High",
+          done: true
+        }
+      ];
+
+      state.workouts = [
+        {
+          id: Date.now() + 4,
+          type: "Back + Biceps",
+          duration: "60",
+          notes: "Rows, pulldowns, curls, core finisher."
+        },
+        {
+          id: Date.now() + 5,
+          type: "Kettlebell Flow",
+          duration: "25",
+          notes: "Mobility and conditioning."
+        }
+      ];
+
+      state.filters = { outlet: "All", status: "Open" };
+      safeSave();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderStats();
+      renderOutletFilters();
+      renderStatusFilters();
+      renderTasks();
+      renderWorkouts();
+    }
+
+    safeLoad();
+    renderAll();
+  </script>
+</body>
+</html>      display:grid;
       grid-template-columns:repeat(4,1fr);
       gap:12px;
     }
