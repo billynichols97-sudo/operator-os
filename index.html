@@ -1034,4 +1034,576 @@
       if (template.recurrence === "Weekdays") return day >= 1 && day <= 5;
       if (template.recurrence === "Weekly") return day === 1;
       if (template.recurrence === "Monthly") return today.getDate() === 1;
-      return 
+      return false;
+    }
+
+    function generateRecurringTasks() {
+      let generated = 0;
+
+      state.templates.forEach(template => {
+        if (!shouldGenerateToday(template)) return;
+
+        const alreadyExists = state.tasks.some(task =>
+          task.sourceTemplateId === template.id &&
+          task.dueDate === getDueDateFromMode(template.defaultDueMode) &&
+          !task.done
+        );
+
+        if (alreadyExists) return;
+
+        const score = (template.impact * 2) + template.urgency + template.revenue - template.effort;
+        const priority = getPriorityLabel(score);
+
+        state.tasks.unshift({
+          id: Date.now() + Math.floor(Math.random() * 100000),
+          title: template.title,
+          outlet: template.outlet,
+          dueDate: getDueDateFromMode(template.defaultDueMode),
+          impact: template.impact,
+          urgency: template.urgency,
+          revenue: template.revenue,
+          effort: template.effort,
+          notes: template.notes,
+          score,
+          priority,
+          done: false,
+          sourceTemplateId: template.id
+        });
+
+        template.lastGeneratedDate = todayString();
+        generated++;
+      });
+
+      safeSave();
+      renderAll();
+      alert(generated + " recurring task(s) generated.");
+    }
+
+    function saveWeeklyReview() {
+      const weekLabel = document.getElementById("weeklyWeekLabel").value.trim();
+      const wins = document.getElementById("weeklyWins").value.trim();
+      const blockers = document.getElementById("weeklyBlockers").value.trim();
+      const nextFocus = document.getElementById("weeklyNextFocus").value.trim();
+
+      if (!weekLabel) {
+        alert("Please enter a week label.");
+        return;
+      }
+
+      state.weeklyReviews.unshift({
+        id: Date.now(),
+        weekLabel,
+        wins,
+        blockers,
+        nextFocus
+      });
+
+      safeSave();
+      renderAll();
+      clearWeeklyForm();
+    }
+
+    function saveMonthlyReview() {
+      const month = document.getElementById("monthlyMonth").value.trim();
+      const highlight = document.getElementById("monthlyHighlight").value.trim();
+      const lessons = document.getElementById("monthlyLessons").value.trim();
+      const nextMonth = document.getElementById("monthlyNextMonth").value.trim();
+
+      if (!month) {
+        alert("Please choose a month.");
+        return;
+      }
+
+      state.monthlyReviews.unshift({
+        id: Date.now(),
+        month,
+        highlight,
+        lessons,
+        nextMonth
+      });
+
+      safeSave();
+      renderAll();
+      clearMonthlyForm();
+    }
+
+    function toggleTaskDone(id) {
+      const task = state.tasks.find(t => t.id === id);
+      if (!task) return;
+      task.done = !task.done;
+      safeSave();
+      renderAll();
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(task => task.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteWorkout(id) {
+      state.workouts = state.workouts.filter(workout => workout.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteTemplate(id) {
+      state.templates = state.templates.filter(template => template.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteWeeklyReview(id) {
+      state.weeklyReviews = state.weeklyReviews.filter(item => item.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function deleteMonthlyReview(id) {
+      state.monthlyReviews = state.monthlyReviews.filter(item => item.id !== id);
+      safeSave();
+      renderAll();
+    }
+
+    function clearTaskForm() {
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskDueDate").value = "";
+      document.getElementById("taskNotes").value = "";
+      document.getElementById("taskImpact").value = "3";
+      document.getElementById("taskUrgency").value = "3";
+      document.getElementById("taskRevenue").value = "3";
+      document.getElementById("taskEffort").value = "3";
+      document.getElementById("taskStatus").value = "open";
+      document.getElementById("taskOutlet").value = "Etsy";
+    }
+
+    function clearWorkoutForm() {
+      document.getElementById("workoutType").value = "";
+      document.getElementById("workoutDuration").value = "";
+      document.getElementById("workoutNotes").value = "";
+    }
+
+    function clearTemplateForm() {
+      document.getElementById("templateTitle").value = "";
+      document.getElementById("templateNotes").value = "";
+      document.getElementById("templateOutlet").value = "Content";
+      document.getElementById("templateRecurrence").value = "Daily";
+      document.getElementById("templateDefaultDueMode").value = "today";
+      document.getElementById("templateImpact").value = "3";
+      document.getElementById("templateUrgency").value = "3";
+      document.getElementById("templateRevenue").value = "3";
+      document.getElementById("templateEffort").value = "3";
+    }
+
+    function clearWeeklyForm() {
+      document.getElementById("weeklyWeekLabel").value = "";
+      document.getElementById("weeklyWins").value = "";
+      document.getElementById("weeklyBlockers").value = "";
+      document.getElementById("weeklyNextFocus").value = "";
+    }
+
+    function clearMonthlyForm() {
+      document.getElementById("monthlyMonth").value = "";
+      document.getElementById("monthlyHighlight").value = "";
+      document.getElementById("monthlyLessons").value = "";
+      document.getElementById("monthlyNextMonth").value = "";
+    }
+
+    function clearAllData() {
+      const confirmed = confirm("Clear all tasks, workouts, templates, and reviews?");
+      if (!confirmed) return;
+      state = {
+        tasks: [],
+        workouts: [],
+        templates: [],
+        weeklyReviews: [],
+        monthlyReviews: [],
+        filters: { outlet: "All", status: "Open" },
+        activeTab: "today"
+      };
+      safeSave();
+      renderAll();
+      restoreTab();
+    }
+
+    function setOutletFilter(outlet) {
+      state.filters.outlet = outlet;
+      safeSave();
+      renderAll();
+    }
+
+    function setStatusFilter(status) {
+      state.filters.status = status;
+      safeSave();
+      renderAll();
+    }
+
+    function getFilteredTasks() {
+      return [...state.tasks]
+        .filter(task => {
+          const outletMatch = state.filters.outlet === "All" || task.outlet === state.filters.outlet;
+          const statusMatch =
+            state.filters.status === "All" ||
+            (state.filters.status === "Open" && !task.done) ||
+            (state.filters.status === "Completed" && task.done);
+          return outletMatch && statusMatch;
+        })
+        .sort((a, b) => {
+          if (a.done !== b.done) return a.done - b.done;
+          return b.score - a.score;
+        });
+    }
+
+    function renderStats() {
+      const open = state.tasks.filter(t => !t.done).length;
+      const completed = state.tasks.filter(t => t.done).length;
+      const top = state.tasks.length ? Math.max(...state.tasks.map(t => t.score)) : 0;
+      const todayOpen = state.tasks.filter(t => !t.done && t.dueDate === todayString()).length;
+
+      document.getElementById("todayOpenCount").textContent = todayOpen;
+      document.getElementById("openTasks").textContent = open;
+      document.getElementById("completedTasks").textContent = completed;
+      document.getElementById("templateCount").textContent = state.templates.length;
+      document.getElementById("workoutCount").textContent = state.workouts.length;
+      document.getElementById("topScore").textContent = top;
+    }
+
+    function renderOutletFilters() {
+      const container = document.getElementById("outletFilters");
+      const outlets = ["All", ...new Set(state.tasks.map(task => task.outlet))];
+
+      container.innerHTML = outlets.map(outlet => `
+        <button
+          class="filter-chip ${state.filters.outlet === outlet ? 'active' : ''}"
+          onclick="setOutletFilter(${JSON.stringify(outlet)})"
+        >${escapeHtml(outlet)}</button>
+      `).join("");
+    }
+
+    function renderStatusFilters() {
+      const container = document.getElementById("statusFilters");
+      const statuses = ["Open", "Completed", "All"];
+
+      container.innerHTML = statuses.map(status => `
+        <button
+          class="filter-chip ${state.filters.status === status ? 'active' : ''}"
+          onclick="setStatusFilter(${JSON.stringify(status)})"
+        >${escapeHtml(status)}</button>
+      `).join("");
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById("taskList");
+      const filteredTasks = getFilteredTasks();
+
+      if (!filteredTasks.length) {
+        taskList.innerHTML = '<div class="empty">No tasks match your current filters.</div>';
+        return;
+      }
+
+      taskList.innerHTML = filteredTasks.map(task => `
+        <div class="task ${task.done ? 'completed-task' : ''}">
+          <div class="row">
+            <div>
+              <h3>${escapeHtml(task.title)}</h3>
+              <div class="meta">Outlet: ${escapeHtml(task.outlet)}${task.dueDate ? " • Due: " + escapeHtml(task.dueDate) : ""}</div>
+              <div class="meta">${formatDueStatus(task.dueDate, task.done)}</div>
+            </div>
+            <span class="badge ${task.done ? 'done' : task.priority.toLowerCase()}">${task.done ? 'Done' : escapeHtml(task.priority)}</span>
+          </div>
+
+          <div class="meta">
+            Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}
+          </div>
+
+          ${task.notes ? `<div class="pill">${escapeHtml(task.notes)}</div>` : ""}
+          ${task.sourceTemplateId ? `<div class="pill">From template</div>` : ""}
+
+          <div class="checkbox-row">
+            <input type="checkbox" ${task.done ? "checked" : ""} onchange="toggleTaskDone(${task.id})" />
+            <span class="small">${task.done ? "Completed" : "Mark as completed"}</span>
+          </div>
+
+          <div class="button-row" style="margin-top:10px;">
+            <button class="secondary-btn" onclick="toggleTaskDone(${task.id})">${task.done ? "Reopen" : "Complete"}</button>
+            <button class="danger-btn" onclick="deleteTask(${task.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWorkouts() {
+      const workoutList = document.getElementById("workoutList");
+      if (!state.workouts.length) {
+        workoutList.innerHTML = '<div class="empty">No workouts logged yet.</div>';
+        return;
+      }
+
+      workoutList.innerHTML = state.workouts.map(workout => `
+        <div class="workout">
+          <div class="row">
+            <div>
+              <h3>${escapeHtml(workout.type)}</h3>
+              <div class="meta">Duration: ${escapeHtml(workout.duration)} min</div>
+            </div>
+            <span class="badge low">Logged</span>
+          </div>
+
+          ${workout.notes ? `<div class="pill">${escapeHtml(workout.notes)}</div>` : ""}
+
+          <div class="button-row" style="margin-top:10px;">
+            <button class="danger-btn" onclick="deleteWorkout(${workout.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderTemplates() {
+      const templateList = document.getElementById("templateList");
+      if (!state.templates.length) {
+        templateList.innerHTML = '<div class="empty">No templates yet. Create your first repeatable task template.</div>';
+        return;
+      }
+
+      templateList.innerHTML = state.templates.map(template => `
+        <div class="template-item">
+          <div class="row">
+            <div>
+              <h3>${escapeHtml(template.title)}</h3>
+              <div class="meta">Outlet: ${escapeHtml(template.outlet)} • Recurs: ${escapeHtml(template.recurrence)}</div>
+            </div>
+            <span class="badge low">${escapeHtml(template.recurrence)}</span>
+          </div>
+
+          <div class="meta">
+            Default due: ${escapeHtml(template.defaultDueMode)} • Impact: ${template.impact} • Urgency: ${template.urgency} • Revenue: ${template.revenue} • Effort: ${template.effort}
+          </div>
+
+          ${template.notes ? `<div class="pill">${escapeHtml(template.notes)}</div>` : ""}
+          ${template.lastGeneratedDate ? `<div class="pill">Last generated: ${escapeHtml(template.lastGeneratedDate)}</div>` : ""}
+
+          <div class="button-row" style="margin-top:10px;">
+            <button onclick="createTaskFromTemplate(${template.id})">Add Task From Template</button>
+            <button class="danger-btn" onclick="deleteTemplate(${template.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWeeklyReviews() {
+      const list = document.getElementById("weeklyReviewList");
+      if (!state.weeklyReviews.length) {
+        list.innerHTML = '<div class="empty">No weekly reviews saved yet.</div>';
+        return;
+      }
+
+      list.innerHTML = state.weeklyReviews.map(item => `
+        <div class="review-item">
+          <div class="row">
+            <h3>${escapeHtml(item.weekLabel)}</h3>
+            <button class="danger-btn" style="width:auto;" onclick="deleteWeeklyReview(${item.id})">Delete</button>
+          </div>
+          <div class="meta"><strong>Wins:</strong> ${escapeHtml(item.wins || "-")}</div>
+          <div class="meta"><strong>Blockers:</strong> ${escapeHtml(item.blockers || "-")}</div>
+          <div class="meta"><strong>Next focus:</strong> ${escapeHtml(item.nextFocus || "-")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderMonthlyReviews() {
+      const list = document.getElementById("monthlyReviewList");
+      if (!state.monthlyReviews.length) {
+        list.innerHTML = '<div class="empty">No monthly reviews saved yet.</div>';
+        return;
+      }
+
+      list.innerHTML = state.monthlyReviews.map(item => `
+        <div class="review-item">
+          <div class="row">
+            <h3>${escapeHtml(item.month)}</h3>
+            <button class="danger-btn" style="width:auto;" onclick="deleteMonthlyReview(${item.id})">Delete</button>
+          </div>
+          <div class="meta"><strong>Highlight:</strong> ${escapeHtml(item.highlight || "-")}</div>
+          <div class="meta"><strong>Lessons:</strong> ${escapeHtml(item.lessons || "-")}</div>
+          <div class="meta"><strong>Next month:</strong> ${escapeHtml(item.nextMonth || "-")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTodayDashboard() {
+      document.getElementById("todayDateLabel").textContent = "Today: " + todayString();
+      const todayList = document.getElementById("todayPriorityList");
+      const todayTasks = [...state.tasks]
+        .filter(task => !task.done && (task.dueDate === todayString() || task.priority === "High"))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 6);
+
+      if (!todayTasks.length) {
+        todayList.innerHTML = '<div class="empty">No high-priority or due-today tasks right now.</div>';
+      } else {
+        todayList.innerHTML = todayTasks.map(task => `
+          <div class="task">
+            <div class="row">
+              <div>
+                <h3>${escapeHtml(task.title)}</h3>
+                <div class="meta">Outlet: ${escapeHtml(task.outlet)}${task.dueDate ? " • Due: " + escapeHtml(task.dueDate) : ""}</div>
+              </div>
+              <span class="badge ${task.priority.toLowerCase()}">${escapeHtml(task.priority)}</span>
+            </div>
+            <div class="meta">Score: ${task.score}</div>
+          </div>
+        `).join("");
+      }
+
+      const topThree = [...state.tasks]
+        .filter(task => !task.done)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+      document.getElementById("topThreeList").innerHTML = topThree.length
+        ? topThree.map(task => `<div>• ${escapeHtml(task.title)} (${escapeHtml(task.outlet)})</div>`).join("")
+        : "No open tasks yet.";
+
+      const recurringCount = state.templates.filter(t => shouldGenerateToday({...t, lastGeneratedDate: null})).length;
+      document.getElementById("recurringSummary").textContent =
+        state.templates.length
+          ? recurringCount + " template(s) are eligible for recurring generation today."
+          : "No recurring templates created yet.";
+
+      const recentWorkout = state.workouts[0];
+      document.getElementById("todayWorkoutSummary").innerHTML = recentWorkout
+        ? `Latest: ${escapeHtml(recentWorkout.type)} (${escapeHtml(recentWorkout.duration)} min)`
+        : "No workouts logged yet.";
+    }
+
+    function seedDemoData() {
+      state.tasks = [
+        {
+          id: Date.now() + 1,
+          title: "Batch 3 short-form content posts",
+          outlet: "Content",
+          dueDate: todayString(),
+          impact: 5,
+          urgency: 4,
+          revenue: 4,
+          effort: 2,
+          notes: "Focus on AI + automation hooks.",
+          score: 16,
+          priority: "High",
+          done: false,
+          sourceTemplateId: 9001
+        },
+        {
+          id: Date.now() + 2,
+          title: "Chest + triceps workout",
+          outlet: "Fitness",
+          dueDate: todayString(),
+          impact: 4,
+          urgency: 3,
+          revenue: 1,
+          effort: 2,
+          notes: "Log weights and reps.",
+          score: 10,
+          priority: "High",
+          done: false,
+          sourceTemplateId: 9002
+        },
+        {
+          id: Date.now() + 3,
+          title: "Follow up with 3 automation leads",
+          outlet: "AI Services",
+          dueDate: getDateOffset(1),
+          impact: 5,
+          urgency: 5,
+          revenue: 5,
+          effort: 3,
+          notes: "Send value-first follow-up.",
+          score: 17,
+          priority: "High",
+          done: false,
+          sourceTemplateId: null
+        }
+      ];
+
+      state.workouts = [
+        {
+          id: Date.now() + 4,
+          type: "Back + Biceps",
+          duration: "60",
+          notes: "Rows, pulldowns, curls.",
+          createdAt: new Date().toISOString()
+        }
+      ];
+
+      state.templates = [
+        {
+          id: 9001,
+          title: "Batch 3 short-form content posts",
+          outlet: "Content",
+          recurrence: "Daily",
+          defaultDueMode: "today",
+          impact: 5,
+          urgency: 4,
+          revenue: 4,
+          effort: 2,
+          notes: "Use for daily content rhythm.",
+          lastGeneratedDate: todayString()
+        },
+        {
+          id: 9002,
+          title: "Chest + triceps workout",
+          outlet: "Fitness",
+          recurrence: "Weekly",
+          defaultDueMode: "today",
+          impact: 4,
+          urgency: 3,
+          revenue: 1,
+          effort: 2,
+          notes: "Weekly push day.",
+          lastGeneratedDate: null
+        }
+      ];
+
+      state.weeklyReviews = [
+        {
+          id: Date.now() + 5,
+          weekLabel: "Week of Apr 10, 2026",
+          wins: "Published app V3 and fixed bugs.",
+          blockers: "Time and setup friction.",
+          nextFocus: "Use templates and recurring tasks."
+        }
+      ];
+
+      state.monthlyReviews = [
+        {
+          id: Date.now() + 6,
+          month: "2026-04",
+          highlight: "Built and launched Operator OS.",
+          lessons: "Shipping small works better than waiting.",
+          nextMonth: "Add sync and stronger dashboard flows."
+        }
+      ];
+
+      state.filters = { outlet: "All", status: "Open" };
+      safeSave();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderStats();
+      renderOutletFilters();
+      renderStatusFilters();
+      renderTasks();
+      renderWorkouts();
+      renderTemplates();
+      renderWeeklyReviews();
+      renderMonthlyReviews();
+      renderTodayDashboard();
+      restoreTab();
+    }
+
+    safeLoad();
+    renderAll();
+  </script>
+</body>
+</html>
