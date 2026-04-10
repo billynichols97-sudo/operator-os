@@ -16,6 +16,7 @@
       --danger:#ff7b72;
       --warn:#ffb454;
       --success:#58d68d;
+      --info:#7cb8ff;
       --radius:18px;
       --shadow:0 12px 30px rgba(0,0,0,.25);
     }
@@ -61,7 +62,7 @@
     .stats{
       margin-top:18px;
       display:grid;
-      grid-template-columns:repeat(7,1fr);
+      grid-template-columns:repeat(8,1fr);
       gap:12px;
     }
 
@@ -219,13 +220,13 @@
       border:1px solid #5c2b31;
     }
 
-    .task-list,.workout-list,.template-list,.review-list,.prompt-list{
+    .task-list,.workout-list,.template-list,.review-list,.prompt-list,.notif-list{
       display:grid;
       gap:12px;
       margin-top:14px;
     }
 
-    .task,.workout,.template-item,.review-item,.prompt-item{
+    .task,.workout,.template-item,.review-item,.prompt-item,.notif-item{
       background:var(--panel-2);
       border:1px solid var(--border);
       border-radius:14px;
@@ -239,7 +240,7 @@
       align-items:flex-start;
     }
 
-    .task h3,.workout h3,.template-item h3,.review-item h3,.prompt-item h3{
+    .task h3,.workout h3,.template-item h3,.review-item h3,.prompt-item h3,.notif-item h3{
       margin:0 0 6px;
       font-size:1rem;
     }
@@ -263,6 +264,10 @@
     .medium{background:rgba(255,180,84,.15);color:#ffc97a}
     .low{background:rgba(88,214,141,.15);color:#89e6ae}
     .done{background:rgba(88,214,141,.18);color:#8ff0b3}
+    .info{background:rgba(124,184,255,.15);color:#a5cdff}
+    .motivation{background:rgba(255,180,84,.16);color:#ffd18a}
+    .celebration{background:rgba(88,214,141,.18);color:#9bf2bc}
+    .reminder{background:rgba(255,123,114,.15);color:#ffb1ab}
 
     .pill{
       display:inline-block;
@@ -466,18 +471,76 @@
       transform:scale(1.2);
     }
 
+    .toast-stack{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      width:min(360px, calc(100vw - 24px));
+      display:grid;
+      gap:10px;
+      z-index:9999;
+    }
+
+    .toast{
+      background:#111824;
+      border:1px solid var(--border);
+      border-left:4px solid var(--info);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:var(--shadow);
+      animation:toastIn .25s ease;
+    }
+
+    .toast.reminder{border-left-color:var(--danger)}
+    .toast.motivation{border-left-color:var(--warn)}
+    .toast.celebration{border-left-color:var(--success)}
+
+    .toast-title{
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .toast-message{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+    }
+
+    .toast-actions{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .toast-actions button{
+      width:auto;
+      padding:8px 10px;
+      font-size:.85rem;
+    }
+
+    @keyframes toastIn{
+      from{opacity:0;transform:translateY(16px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
     @media (max-width: 980px){
       .layout,.today-grid,.two-col,.calendar-shell{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(3,1fr)}
+      .stats{grid-template-columns:repeat(4,1fr)}
       .form-grid,.day-picks,.calendar-grid{grid-template-columns:1fr}
     }
 
     @media (max-width: 560px){
-      .stats{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
       .app{padding:14px}
       .hero,.panel{padding:16px}
       summary,.card-content{padding:16px}
       .calendar-grid{grid-template-columns:repeat(2,1fr)}
+      .toast-stack{
+        right:12px;
+        left:12px;
+        width:auto;
+      }
     }
   </style>
 </head>
@@ -485,7 +548,7 @@
   <div class="app">
     <section class="hero">
       <h1>Operator OS</h1>
-      <p>Your personal command center for recurring routines, reviews, reusable prompts, and calendar planning.</p>
+      <p>Your personal command center for recurring routines, reviews, reusable prompts, calendar planning, and in-app motivation.</p>
 
       <div class="stats">
         <div class="stat"><div class="stat-label">Today Open</div><div class="stat-value" id="todayOpenCount">0</div></div>
@@ -495,11 +558,13 @@
         <div class="stat"><div class="stat-label">Prompts</div><div class="stat-value" id="promptCount">0</div></div>
         <div class="stat"><div class="stat-label">Workouts</div><div class="stat-value" id="workoutCount">0</div></div>
         <div class="stat"><div class="stat-label">Top Score</div><div class="stat-value" id="topScore">0</div></div>
+        <div class="stat"><div class="stat-label">Alerts</div><div class="stat-value" id="alertCount">0</div></div>
       </div>
 
       <div class="top-actions">
         <button onclick="seedDemoData()">Load Demo Data</button>
         <button class="secondary-btn" onclick="generateRecurringTasks()">Generate Recurring Tasks</button>
+        <button class="secondary-btn" onclick="runNotificationScan(true)">Check Notifications Now</button>
         <button class="danger-btn" onclick="clearAllData()">Clear All Data</button>
       </div>
     </section>
@@ -510,6 +575,7 @@
       <button class="tab-btn" onclick="setTab('templates')">Template Library</button>
       <button class="tab-btn" onclick="setTab('prompts')">Prompt Library</button>
       <button class="tab-btn" onclick="setTab('calendar')">Calendar</button>
+      <button class="tab-btn" onclick="setTab('notifications')">Notifications</button>
       <button class="tab-btn" onclick="setTab('weekly')">Weekly Review</button>
       <button class="tab-btn" onclick="setTab('monthly')">Monthly Review</button>
     </div>
@@ -537,6 +603,10 @@
             <div class="review-item">
               <h3>Workout Momentum</h3>
               <div id="todayWorkoutSummary" class="meta"></div>
+            </div>
+            <div class="review-item">
+              <h3>Latest Alert</h3>
+              <div id="latestAlertSummary" class="meta"></div>
             </div>
           </div>
         </div>
@@ -761,6 +831,68 @@
       </div>
     </section>
 
+    <section id="tab-notifications" class="tab-section">
+      <div class="layout">
+        <div>
+          <div class="panel">
+            <h2 class="section-title">Notification Settings</h2>
+
+            <div class="toggle-line">
+              <input type="checkbox" id="notifEnabled" onchange="saveNotificationSettingsFromUI()" />
+              <label for="notifEnabled" style="margin:0;">Enable in-app notifications</label>
+            </div>
+
+            <div class="toggle-line">
+              <input type="checkbox" id="notifReminders" onchange="saveNotificationSettingsFromUI()" />
+              <label for="notifReminders" style="margin:0;">Task reminders</label>
+            </div>
+
+            <div class="toggle-line">
+              <input type="checkbox" id="notifMotivation" onchange="saveNotificationSettingsFromUI()" />
+              <label for="notifMotivation" style="margin:0;">Motivational nudges</label>
+            </div>
+
+            <div class="toggle-line">
+              <input type="checkbox" id="notifCelebrations" onchange="saveNotificationSettingsFromUI()" />
+              <label for="notifCelebrations" style="margin:0;">Celebration messages</label>
+            </div>
+
+            <div class="form-grid" style="margin-top:14px;">
+              <div>
+                <label for="notifCheckMinutes">Check every X minutes</label>
+                <input id="notifCheckMinutes" type="number" min="1" max="180" onchange="saveNotificationSettingsFromUI()" />
+              </div>
+              <div>
+                <label for="notifQuietStart">Quiet hours start (24h)</label>
+                <input id="notifQuietStart" type="number" min="0" max="23" onchange="saveNotificationSettingsFromUI()" />
+              </div>
+              <div>
+                <label for="notifQuietEnd">Quiet hours end (24h)</label>
+                <input id="notifQuietEnd" type="number" min="0" max="23" onchange="saveNotificationSettingsFromUI()" />
+              </div>
+              <div>
+                <label for="notifToastSeconds">Toast seconds</label>
+                <input id="notifToastSeconds" type="number" min="2" max="20" onchange="saveNotificationSettingsFromUI()" />
+              </div>
+            </div>
+
+            <div class="button-row" style="margin-top:14px;">
+              <button onclick="runNotificationScan(true)">Run Scan Now</button>
+              <button class="secondary-btn" onclick="clearNotificationHistory()">Clear History</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h2 class="section-title">Notification Center</h2>
+            <div class="meta">Recent reminders, motivation, and celebration messages generated inside the app.</div>
+            <div id="notificationList" class="notif-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="tab-weekly" class="tab-section">
       <div class="layout">
         <div class="panel">
@@ -806,8 +938,11 @@
     </section>
   </div>
 
+  <div id="toastStack" class="toast-stack"></div>
+
   <script>
-    const STORAGE_KEY = "operatorOSDataV43";
+    const STORAGE_KEY = "operatorOSDataV44";
+    let notifIntervalId = null;
 
     let state = {
       tasks: [],
@@ -816,6 +951,8 @@
       prompts: [],
       weeklyReviews: [],
       monthlyReviews: [],
+      notifications: [],
+      toastQueue: [],
       filters: { outlet: "All", status: "Open" },
       promptFilter: "All",
       activeTab: "today",
@@ -824,6 +961,21 @@
         calendarMonth: new Date().getMonth(),
         calendarYear: new Date().getFullYear(),
         selectedCalendarDate: new Date().toISOString().split("T")[0]
+      },
+      notificationSettings: {
+        enabled: true,
+        reminders: true,
+        motivation: true,
+        celebrations: true,
+        checkMinutes: 5,
+        quietStart: 23,
+        quietEnd: 7,
+        toastSeconds: 5
+      },
+      notificationMemory: {
+        shownKeys: {},
+        lastMotivationAt: null,
+        lastReminderScanAt: null
       }
     };
 
@@ -839,6 +991,8 @@
             prompts: parsed.prompts || [],
             weeklyReviews: parsed.weeklyReviews || [],
             monthlyReviews: parsed.monthlyReviews || [],
+            notifications: parsed.notifications || [],
+            toastQueue: [],
             filters: parsed.filters || { outlet: "All", status: "Open" },
             promptFilter: parsed.promptFilter || "All",
             activeTab: parsed.activeTab || "today",
@@ -847,6 +1001,21 @@
               calendarMonth: parsed.ui?.calendarMonth ?? new Date().getMonth(),
               calendarYear: parsed.ui?.calendarYear ?? new Date().getFullYear(),
               selectedCalendarDate: parsed.ui?.selectedCalendarDate || new Date().toISOString().split("T")[0]
+            },
+            notificationSettings: {
+              enabled: parsed.notificationSettings?.enabled ?? true,
+              reminders: parsed.notificationSettings?.reminders ?? true,
+              motivation: parsed.notificationSettings?.motivation ?? true,
+              celebrations: parsed.notificationSettings?.celebrations ?? true,
+              checkMinutes: parsed.notificationSettings?.checkMinutes ?? 5,
+              quietStart: parsed.notificationSettings?.quietStart ?? 23,
+              quietEnd: parsed.notificationSettings?.quietEnd ?? 7,
+              toastSeconds: parsed.notificationSettings?.toastSeconds ?? 5
+            },
+            notificationMemory: {
+              shownKeys: parsed.notificationMemory?.shownKeys || {},
+              lastMotivationAt: parsed.notificationMemory?.lastMotivationAt || null,
+              lastReminderScanAt: parsed.notificationMemory?.lastReminderScanAt || null
             }
           };
         }
@@ -857,7 +1026,9 @@
 
     function safeSave() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const snapshot = JSON.parse(JSON.stringify(state));
+        snapshot.toastQueue = [];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
       } catch (error) {
         alert("Could not save data in this browser right now.");
       }
@@ -921,6 +1092,7 @@
           (state.activeTab === "templates" && text === "template library") ||
           (state.activeTab === "prompts" && text === "prompt library") ||
           (state.activeTab === "calendar" && text === "calendar") ||
+          (state.activeTab === "notifications" && text === "notifications") ||
           (state.activeTab === "weekly" && text === "weekly review") ||
           (state.activeTab === "monthly" && text === "monthly review")
         ) btn.classList.add("active");
@@ -972,6 +1144,11 @@
 
       safeSave();
       renderAll();
+
+      if (state.notificationSettings.enabled && state.notificationSettings.celebrations) {
+        pushNotification("celebration", "Task added", `"${title}" is now in your system. Keep stacking wins.`);
+      }
+
       clearTaskForm();
     }
 
@@ -995,6 +1172,11 @@
 
       safeSave();
       renderAll();
+
+      if (state.notificationSettings.enabled && state.notificationSettings.celebrations) {
+        pushNotification("celebration", "Workout logged", `Nice work — ${type} is logged${duration ? " for " + duration + " minutes" : ""}.`);
+      }
+
       clearWorkoutForm();
     }
 
@@ -1136,6 +1318,10 @@
       template.lastGeneratedDate = todayString();
       safeSave();
       renderAll();
+
+      if (state.notificationSettings.enabled && state.notificationSettings.celebrations) {
+        pushNotification("celebration", "Template task created", `"${template.title}" was added from your template library.`);
+      }
     }
 
     function generateRecurringTasks() {
@@ -1178,7 +1364,12 @@
 
       safeSave();
       renderAll();
-      alert(generated + " recurring task(s) generated.");
+
+      if (generated > 0 && state.notificationSettings.enabled && state.notificationSettings.celebrations) {
+        pushNotification("celebration", "Recurring tasks generated", `${generated} recurring task(s) were added to your planner.`);
+      } else {
+        alert(generated + " recurring task(s) generated.");
+      }
     }
 
     function savePrompt() {
@@ -1234,7 +1425,7 @@
 
       try {
         await navigator.clipboard.writeText(prompt.text);
-        alert("Prompt copied.");
+        pushNotification("celebration", "Prompt copied", `"${prompt.title}" is ready to paste into another AI tool.`);
       } catch (error) {
         alert("Copy failed in this browser. You can still copy manually.");
       }
@@ -1267,6 +1458,7 @@
       state.weeklyReviews.unshift({ id: Date.now(), weekLabel, wins, blockers, nextFocus });
       safeSave();
       renderAll();
+      pushNotification("celebration", "Weekly review saved", `Your review for "${weekLabel}" is saved.`);
       clearWeeklyForm();
     }
 
@@ -1284,15 +1476,25 @@
       state.monthlyReviews.unshift({ id: Date.now(), month, highlight, lessons, nextMonth });
       safeSave();
       renderAll();
+      pushNotification("celebration", "Monthly review saved", `Your review for "${month}" is saved.`);
       clearMonthlyForm();
     }
 
     function toggleTaskDone(id) {
       const task = state.tasks.find(t => t.id === id);
       if (!task) return;
+      const wasDone = task.done;
       task.done = !task.done;
       safeSave();
       renderAll();
+
+      if (!wasDone && task.done && state.notificationSettings.enabled && state.notificationSettings.celebrations) {
+        pushNotification("celebration", "Task completed", `You completed "${task.title}".`);
+        const todayOpen = state.tasks.filter(t => !t.done && t.dueDate === todayString()).length;
+        if (todayOpen === 0) {
+          pushNotification("celebration", "Today is cleared", "You finished all tasks due today. That’s a real win.");
+        }
+      }
     }
 
     function deleteTask(id) {
@@ -1386,7 +1588,7 @@
     }
 
     function clearAllData() {
-      const confirmed = confirm("Clear all tasks, workouts, templates, prompts, and reviews?");
+      const confirmed = confirm("Clear all tasks, workouts, templates, prompts, reviews, and notifications?");
       if (!confirmed) return;
       state = {
         tasks: [],
@@ -1395,6 +1597,8 @@
         prompts: [],
         weeklyReviews: [],
         monthlyReviews: [],
+        notifications: [],
+        toastQueue: [],
         filters: { outlet: "All", status: "Open" },
         promptFilter: "All",
         activeTab: "today",
@@ -1403,12 +1607,27 @@
           calendarMonth: new Date().getMonth(),
           calendarYear: new Date().getFullYear(),
           selectedCalendarDate: new Date().toISOString().split("T")[0]
+        },
+        notificationSettings: {
+          enabled: true,
+          reminders: true,
+          motivation: true,
+          celebrations: true,
+          checkMinutes: 5,
+          quietStart: 23,
+          quietEnd: 7,
+          toastSeconds: 5
+        },
+        notificationMemory: {
+          shownKeys: {},
+          lastMotivationAt: null,
+          lastReminderScanAt: null
         }
       };
       safeSave();
       renderAll();
-      clearTemplateForm();
-      clearPromptForm();
+      syncNotificationSettingsUI();
+      scheduleNotificationEngine();
     }
 
     function setOutletFilter(outlet) {
@@ -1452,6 +1671,7 @@
       document.getElementById("promptCount").textContent = state.prompts.length;
       document.getElementById("workoutCount").textContent = state.workouts.length;
       document.getElementById("topScore").textContent = top;
+      document.getElementById("alertCount").textContent = state.notifications.length;
     }
 
     function renderOutletFilters() {
@@ -1688,6 +1908,11 @@
       document.getElementById("todayWorkoutSummary").innerHTML = recentWorkout
         ? `Latest: ${escapeHtml(recentWorkout.type)} (${escapeHtml(recentWorkout.duration)} min)`
         : "No workouts logged yet.";
+
+      const latest = state.notifications[0];
+      document.getElementById("latestAlertSummary").textContent = latest
+        ? latest.title + " — " + latest.message
+        : "No alerts yet.";
     }
 
     function getTasksForDate(dateString) {
@@ -1842,6 +2067,228 @@
       }
     }
 
+    function renderNotificationCenter() {
+      const list = document.getElementById("notificationList");
+      if (!state.notifications.length) {
+        list.innerHTML = '<div class="empty">No in-app notifications yet.</div>';
+        return;
+      }
+
+      list.innerHTML = state.notifications.map(item => `
+        <div class="notif-item">
+          <div class="row">
+            <div>
+              <h3>${escapeHtml(item.title)}</h3>
+              <div class="meta">${escapeHtml(item.timestamp)}</div>
+            </div>
+            <span class="badge ${item.type}">${escapeHtml(capitalize(item.type))}</span>
+          </div>
+          <div class="meta">${escapeHtml(item.message)}</div>
+        </div>
+      `).join("");
+    }
+
+    function syncNotificationSettingsUI() {
+      const s = state.notificationSettings;
+      const enabled = document.getElementById("notifEnabled");
+      const reminders = document.getElementById("notifReminders");
+      const motivation = document.getElementById("notifMotivation");
+      const celebrations = document.getElementById("notifCelebrations");
+      const checkMinutes = document.getElementById("notifCheckMinutes");
+      const quietStart = document.getElementById("notifQuietStart");
+      const quietEnd = document.getElementById("notifQuietEnd");
+      const toastSeconds = document.getElementById("notifToastSeconds");
+
+      if (enabled) enabled.checked = !!s.enabled;
+      if (reminders) reminders.checked = !!s.reminders;
+      if (motivation) motivation.checked = !!s.motivation;
+      if (celebrations) celebrations.checked = !!s.celebrations;
+      if (checkMinutes) checkMinutes.value = s.checkMinutes;
+      if (quietStart) quietStart.value = s.quietStart;
+      if (quietEnd) quietEnd.value = s.quietEnd;
+      if (toastSeconds) toastSeconds.value = s.toastSeconds;
+    }
+
+    function saveNotificationSettingsFromUI() {
+      state.notificationSettings.enabled = document.getElementById("notifEnabled").checked;
+      state.notificationSettings.reminders = document.getElementById("notifReminders").checked;
+      state.notificationSettings.motivation = document.getElementById("notifMotivation").checked;
+      state.notificationSettings.celebrations = document.getElementById("notifCelebrations").checked;
+      state.notificationSettings.checkMinutes = Math.max(1, Number(document.getElementById("notifCheckMinutes").value || 5));
+      state.notificationSettings.quietStart = Math.max(0, Math.min(23, Number(document.getElementById("notifQuietStart").value || 23)));
+      state.notificationSettings.quietEnd = Math.max(0, Math.min(23, Number(document.getElementById("notifQuietEnd").value || 7)));
+      state.notificationSettings.toastSeconds = Math.max(2, Math.min(20, Number(document.getElementById("notifToastSeconds").value || 5)));
+      safeSave();
+      scheduleNotificationEngine();
+      renderNotificationCenter();
+      renderStats();
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function isQuietHours() {
+      const nowHour = new Date().getHours();
+      const start = state.notificationSettings.quietStart;
+      const end = state.notificationSettings.quietEnd;
+
+      if (start === end) return false;
+      if (start < end) return nowHour >= start && nowHour < end;
+      return nowHour >= start || nowHour < end;
+    }
+
+    function pushNotification(type, title, message, key = null, skipToastCheck = false) {
+      if (!state.notificationSettings.enabled) return;
+
+      const dedupeKey = key || `${type}:${title}:${message}`;
+      if (state.notificationMemory.shownKeys[dedupeKey]) return;
+
+      state.notificationMemory.shownKeys[dedupeKey] = new Date().toISOString();
+
+      const item = {
+        id: Date.now() + Math.floor(Math.random() * 100000),
+        type,
+        title,
+        message,
+        timestamp: new Date().toLocaleString()
+      };
+
+      state.notifications.unshift(item);
+      state.notifications = state.notifications.slice(0, 100);
+
+      if (!isQuietHours() || skipToastCheck) {
+        state.toastQueue.unshift(item);
+        renderToasts();
+      }
+
+      safeSave();
+      renderNotificationCenter();
+      renderStats();
+      renderTodayDashboard();
+    }
+
+    function renderToasts() {
+      const stack = document.getElementById("toastStack");
+      const activeToasts = state.toastQueue.slice(0, 4);
+
+      stack.innerHTML = activeToasts.map(item => `
+        <div class="toast ${item.type}">
+          <div class="toast-title">${escapeHtml(item.title)}</div>
+          <div class="toast-message">${escapeHtml(item.message)}</div>
+          <div class="toast-actions">
+            <button class="secondary-btn" onclick="dismissToast(${item.id})">Dismiss</button>
+            <button onclick="openNotificationsTabAndDismiss(${item.id})">View</button>
+          </div>
+        </div>
+      `).join("");
+
+      activeToasts.forEach(item => {
+        setTimeout(() => dismissToast(item.id), state.notificationSettings.toastSeconds * 1000);
+      });
+    }
+
+    function dismissToast(id) {
+      state.toastQueue = state.toastQueue.filter(t => t.id !== id);
+      renderToasts();
+    }
+
+    function openNotificationsTabAndDismiss(id) {
+      dismissToast(id);
+      setTab("notifications");
+    }
+
+    function clearNotificationHistory() {
+      state.notifications = [];
+      state.notificationMemory.shownKeys = {};
+      safeSave();
+      renderNotificationCenter();
+      renderStats();
+      renderTodayDashboard();
+    }
+
+    function runNotificationScan(manual = false) {
+      if (!state.notificationSettings.enabled && !manual) return;
+
+      const today = todayString();
+      const openTasks = state.tasks.filter(t => !t.done);
+      const dueToday = openTasks.filter(t => t.dueDate === today);
+      const overdue = openTasks.filter(t => t.dueDate && t.dueDate < today);
+      const highPriorityOpen = openTasks.filter(t => t.priority === "High");
+
+      if (state.notificationSettings.reminders) {
+        overdue.slice(0, 3).forEach(task => {
+          pushNotification(
+            "reminder",
+            "Overdue task",
+            `"${task.title}" is overdue. Clear it or reschedule it today.`,
+            `overdue:${task.id}:${task.dueDate}`
+          );
+        });
+
+        dueToday.slice(0, 3).forEach(task => {
+          pushNotification(
+            "reminder",
+            "Due today",
+            `"${task.title}" is due today. Give it a focused block.`,
+            `today:${task.id}:${task.dueDate}`
+          );
+        });
+      }
+
+      if (state.notificationSettings.motivation) {
+        const now = Date.now();
+        const lastMotivation = state.notificationMemory.lastMotivationAt ? new Date(state.notificationMemory.lastMotivationAt).getTime() : 0;
+        const hoursSince = (now - lastMotivation) / (1000 * 60 * 60);
+
+        if (hoursSince >= 4 || manual) {
+          if (highPriorityOpen.length >= 3) {
+            pushNotification(
+              "motivation",
+              "Focus reset",
+              `You have ${highPriorityOpen.length} high-priority tasks open. Pick one, finish it, then build momentum.`,
+              `motivation:high:${today}:${manual ? now : "auto"}`,
+              manual
+            );
+            state.notificationMemory.lastMotivationAt = new Date().toISOString();
+          } else if (!state.workouts.length) {
+            pushNotification(
+              "motivation",
+              "Body check-in",
+              "No workouts logged yet. Even a short session counts today.",
+              `motivation:workout:${today}:${manual ? now : "auto"}`,
+              manual
+            );
+            state.notificationMemory.lastMotivationAt = new Date().toISOString();
+          } else if (!openTasks.length) {
+            pushNotification(
+              "celebration",
+              "Clean slate",
+              "You have no open tasks right now. That’s rare — use the space well.",
+              `celebration:clearslate:${today}`,
+              manual
+            );
+            state.notificationMemory.lastMotivationAt = new Date().toISOString();
+          }
+        }
+      }
+
+      state.notificationMemory.lastReminderScanAt = new Date().toISOString();
+      safeSave();
+    }
+
+    function scheduleNotificationEngine() {
+      if (notifIntervalId) {
+        clearInterval(notifIntervalId);
+        notifIntervalId = null;
+      }
+
+      if (!state.notificationSettings.enabled) return;
+
+      const ms = Math.max(1, state.notificationSettings.checkMinutes) * 60 * 1000;
+      notifIntervalId = setInterval(() => runNotificationScan(false), ms);
+    }
+
     function seedDemoData() {
       state.tasks = [
         {
@@ -1878,7 +2325,7 @@
           id: Date.now() + 3,
           title: "Budget review",
           outlet: "Personal",
-          dueDate: getDateOffset(3),
+          dueDate: getDateOffset(-1),
           impact: 4,
           urgency: 3,
           revenue: 3,
@@ -1935,12 +2382,33 @@
 
       state.weeklyReviews = [];
       state.monthlyReviews = [];
+      state.notifications = [];
+      state.toastQueue = [];
       state.filters = { outlet: "All", status: "Open" };
       state.promptFilter = "All";
       state.ui.showCalendarInline = true;
       state.ui.selectedCalendarDate = todayString();
+      state.notificationSettings = {
+        enabled: true,
+        reminders: true,
+        motivation: true,
+        celebrations: true,
+        checkMinutes: 5,
+        quietStart: 23,
+        quietEnd: 7,
+        toastSeconds: 5
+      };
+      state.notificationMemory = {
+        shownKeys: {},
+        lastMotivationAt: null,
+        lastReminderScanAt: null
+      };
+
       safeSave();
       renderAll();
+      syncNotificationSettingsUI();
+      scheduleNotificationEngine();
+      runNotificationScan(true);
       clearTemplateForm();
       clearPromptForm();
     }
@@ -1958,11 +2426,16 @@
       renderMonthlyReviews();
       renderTodayDashboard();
       renderCalendar();
+      renderNotificationCenter();
+      syncNotificationSettingsUI();
+      renderToasts();
       restoreTab();
     }
 
     safeLoad();
     renderAll();
+    scheduleNotificationEngine();
+    setTimeout(() => runNotificationScan(false), 2000);
   </script>
 </body>
 </html>
