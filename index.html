@@ -61,7 +61,7 @@
     .stats{
       margin-top:18px;
       display:grid;
-      grid-template-columns:repeat(6,1fr);
+      grid-template-columns:repeat(7,1fr);
       gap:12px;
     }
 
@@ -79,7 +79,7 @@
     }
 
     .stat-value{
-      font-size:1.35rem;
+      font-size:1.2rem;
       font-weight:700;
     }
 
@@ -107,17 +107,24 @@
       font-weight:700;
     }
 
-    .tab-section{
-      display:none;
-    }
-
-    .tab-section.active{
-      display:block;
-    }
+    .tab-section{display:none}
+    .tab-section.active{display:block}
 
     .layout{
       display:grid;
       grid-template-columns:1.08fr .92fr;
+      gap:20px;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+
+    .today-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
       gap:20px;
     }
 
@@ -141,9 +148,7 @@
       align-items:center;
     }
 
-    summary::-webkit-details-marker{
-      display:none;
-    }
+    summary::-webkit-details-marker{display:none}
 
     .summary-right{
       color:var(--muted);
@@ -155,9 +160,7 @@
       padding:18px;
     }
 
-    .panel{
-      margin-bottom:20px;
-    }
+    .panel{margin-bottom:20px}
 
     .section-title{
       margin:0 0 14px;
@@ -170,15 +173,7 @@
       gap:12px;
     }
 
-    .form-grid.full{
-      grid-template-columns:1fr;
-    }
-
-    .three-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-    }
+    .form-grid.full{grid-template-columns:1fr}
 
     label{
       display:block;
@@ -210,9 +205,7 @@
       border:none;
     }
 
-    button:hover{
-      opacity:.96;
-    }
+    button:hover{opacity:.96}
 
     .secondary-btn{
       background:#273142;
@@ -226,13 +219,13 @@
       border:1px solid #5c2b31;
     }
 
-    .task-list,.workout-list,.template-list,.review-list{
+    .task-list,.workout-list,.template-list,.review-list,.prompt-list{
       display:grid;
       gap:12px;
       margin-top:14px;
     }
 
-    .task,.workout,.template-item,.review-item{
+    .task,.workout,.template-item,.review-item,.prompt-item{
       background:var(--panel-2);
       border:1px solid var(--border);
       border-radius:14px;
@@ -246,7 +239,7 @@
       align-items:flex-start;
     }
 
-    .task h3,.workout h3,.template-item h3,.review-item h3{
+    .task h3,.workout h3,.template-item h3,.review-item h3,.prompt-item h3{
       margin:0 0 6px;
       font-size:1rem;
     }
@@ -300,7 +293,7 @@
       margin:16px 0;
     }
 
-    .top-actions,.filters,.button-row{
+    .top-actions,.filters,.button-row,.calendar-topbar{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -332,11 +325,34 @@
       align-items:center;
       gap:10px;
       margin-top:12px;
+      flex-wrap:wrap;
     }
 
     .checkbox-row input{
       width:auto;
-      transform:scale(1.2);
+      transform:scale(1.1);
+    }
+
+    .day-picks{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .day-option{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#0f141b;
+    }
+
+    .day-option input{
+      width:auto;
+      margin:0;
     }
 
     .completed-task{
@@ -357,16 +373,103 @@
       font-weight:600;
     }
 
-    .today-grid{
+    .prompt-text{
+      white-space:pre-wrap;
+      background:#0f141b;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      margin-top:10px;
+      color:var(--text);
+    }
+
+    .calendar-shell{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
+      grid-template-columns:1.2fr .8fr;
       gap:20px;
     }
 
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-top:16px;
+    }
+
+    .calendar-head{
+      text-align:center;
+      color:var(--muted);
+      font-size:.85rem;
+      padding:8px 0;
+    }
+
+    .calendar-day{
+      min-height:110px;
+      border:1px solid var(--border);
+      background:#0f141b;
+      border-radius:14px;
+      padding:10px;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .calendar-day:hover{
+      border-color:var(--accent);
+    }
+
+    .calendar-day.muted{
+      opacity:.45;
+    }
+
+    .calendar-day.today{
+      outline:2px solid var(--accent);
+      outline-offset:0;
+    }
+
+    .calendar-day.selected{
+      border-color:var(--warn);
+    }
+
+    .calendar-date{
+      font-weight:700;
+      font-size:.95rem;
+    }
+
+    .calendar-count{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .calendar-mini-task{
+      font-size:.75rem;
+      padding:4px 6px;
+      border-radius:999px;
+      background:#202938;
+      color:var(--text);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .toggle-line{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+
+    .toggle-line input{
+      width:auto;
+      transform:scale(1.2);
+    }
+
     @media (max-width: 980px){
-      .layout,.today-grid{grid-template-columns:1fr}
+      .layout,.today-grid,.two-col,.calendar-shell{grid-template-columns:1fr}
       .stats{grid-template-columns:repeat(3,1fr)}
-      .form-grid,.three-grid{grid-template-columns:1fr}
+      .form-grid,.day-picks,.calendar-grid{grid-template-columns:1fr}
     }
 
     @media (max-width: 560px){
@@ -374,6 +477,7 @@
       .app{padding:14px}
       .hero,.panel{padding:16px}
       summary,.card-content{padding:16px}
+      .calendar-grid{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
@@ -381,33 +485,16 @@
   <div class="app">
     <section class="hero">
       <h1>Operator OS</h1>
-      <p>Your personal command center for recurring routines, daily execution, and reviews.</p>
+      <p>Your personal command center for recurring routines, reviews, reusable prompts, and calendar planning.</p>
 
       <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Today Open</div>
-          <div class="stat-value" id="todayOpenCount">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">All Open</div>
-          <div class="stat-value" id="openTasks">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Completed</div>
-          <div class="stat-value" id="completedTasks">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Templates</div>
-          <div class="stat-value" id="templateCount">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Workouts</div>
-          <div class="stat-value" id="workoutCount">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Top Score</div>
-          <div class="stat-value" id="topScore">0</div>
-        </div>
+        <div class="stat"><div class="stat-label">Today Open</div><div class="stat-value" id="todayOpenCount">0</div></div>
+        <div class="stat"><div class="stat-label">All Open</div><div class="stat-value" id="openTasks">0</div></div>
+        <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="completedTasks">0</div></div>
+        <div class="stat"><div class="stat-label">Templates</div><div class="stat-value" id="templateCount">0</div></div>
+        <div class="stat"><div class="stat-label">Prompts</div><div class="stat-value" id="promptCount">0</div></div>
+        <div class="stat"><div class="stat-label">Workouts</div><div class="stat-value" id="workoutCount">0</div></div>
+        <div class="stat"><div class="stat-label">Top Score</div><div class="stat-value" id="topScore">0</div></div>
       </div>
 
       <div class="top-actions">
@@ -421,130 +508,72 @@
       <button class="tab-btn active" onclick="setTab('today')">Today</button>
       <button class="tab-btn" onclick="setTab('planner')">Planner</button>
       <button class="tab-btn" onclick="setTab('templates')">Template Library</button>
+      <button class="tab-btn" onclick="setTab('prompts')">Prompt Library</button>
+      <button class="tab-btn" onclick="setTab('calendar')">Calendar</button>
       <button class="tab-btn" onclick="setTab('weekly')">Weekly Review</button>
       <button class="tab-btn" onclick="setTab('monthly')">Monthly Review</button>
     </div>
 
     <section id="tab-today" class="tab-section active">
       <div class="today-grid">
-        <div>
-          <div class="panel">
-            <h2 class="section-title">Today Dashboard</h2>
-            <div class="meta" id="todayDateLabel"></div>
-            <div class="divider"></div>
-            <div id="todayPriorityList" class="task-list"></div>
-          </div>
+        <div class="panel">
+          <h2 class="section-title">Today Dashboard</h2>
+          <div class="meta" id="todayDateLabel"></div>
+          <div class="divider"></div>
+          <div id="todayPriorityList" class="task-list"></div>
         </div>
 
-        <div>
-          <div class="panel">
-            <h2 class="section-title">Today Summary</h2>
-            <div class="review-list">
-              <div class="review-item">
-                <h3>Top 3 Focus</h3>
-                <div id="topThreeList" class="meta"></div>
-              </div>
-              <div class="review-item">
-                <h3>Recurring Ready</h3>
-                <div id="recurringSummary" class="meta"></div>
-              </div>
-              <div class="review-item">
-                <h3>Workout Momentum</h3>
-                <div id="todayWorkoutSummary" class="meta"></div>
-              </div>
+        <div class="panel">
+          <h2 class="section-title">Today Summary</h2>
+          <div class="review-list">
+            <div class="review-item">
+              <h3>Top 3 Focus</h3>
+              <div id="topThreeList" class="meta"></div>
+            </div>
+            <div class="review-item">
+              <h3>Recurring Ready</h3>
+              <div id="recurringSummary" class="meta"></div>
+            </div>
+            <div class="review-item">
+              <h3>Workout Momentum</h3>
+              <div id="todayWorkoutSummary" class="meta"></div>
             </div>
           </div>
         </div>
       </div>
+
+      <div id="inlineCalendarWrap"></div>
     </section>
 
     <section id="tab-planner" class="tab-section">
       <div class="layout">
         <div>
           <details class="card" open>
-            <summary>
-              <span>Add Task</span>
-              <span class="summary-right">One-off or generated tasks</span>
-            </summary>
+            <summary><span>Add Task</span><span class="summary-right">One-off or generated tasks</span></summary>
             <div class="card-content">
               <div class="form-grid">
-                <div>
-                  <label for="taskTitle">Task title</label>
-                  <input id="taskTitle" placeholder="Finish Etsy draft" />
-                </div>
-
-                <div>
-                  <label for="taskOutlet">Outlet</label>
+                <div><label for="taskTitle">Task title</label><input id="taskTitle" placeholder="Finish Etsy draft" /></div>
+                <div><label for="taskOutlet">Outlet</label>
                   <select id="taskOutlet">
-                    <option>Etsy</option>
-                    <option>AI Services</option>
-                    <option>Content</option>
-                    <option>Fitness</option>
-                    <option>Personal</option>
-                    <option>School</option>
+                    <option>Etsy</option><option>AI Services</option><option>Content</option><option>Fitness</option><option>Personal</option><option>School</option>
                   </select>
                 </div>
-
-                <div>
-                  <label for="taskDueDate">Due date</label>
-                  <input id="taskDueDate" type="date" />
-                </div>
-
-                <div>
-                  <label for="taskImpact">Impact (1-5)</label>
-                  <select id="taskImpact">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="taskUrgency">Urgency (1-5)</label>
-                  <select id="taskUrgency">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="taskRevenue">Revenue Value (1-5)</label>
-                  <select id="taskRevenue">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="taskEffort">Effort (1-5)</label>
-                  <select id="taskEffort">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="taskStatus">Starting status</label>
-                  <select id="taskStatus">
-                    <option value="open" selected>Open</option>
-                    <option value="done">Completed</option>
-                  </select>
-                </div>
+                <div><label for="taskDueDate">Due date</label><input id="taskDueDate" type="date" /></div>
+                <div><label for="taskImpact">Impact (1-5)</label><select id="taskImpact"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="taskUrgency">Urgency (1-5)</label><select id="taskUrgency"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="taskRevenue">Revenue Value (1-5)</label><select id="taskRevenue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="taskEffort">Effort (1-5)</label><select id="taskEffort"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="taskStatus">Starting status</label><select id="taskStatus"><option value="open" selected>Open</option><option value="done">Completed</option></select></div>
               </div>
-
               <div class="form-grid full" style="margin-top:12px;">
-                <div>
-                  <label for="taskNotes">Notes</label>
-                  <textarea id="taskNotes" placeholder="Anything important about this task..."></textarea>
-                </div>
+                <div><label for="taskNotes">Notes</label><textarea id="taskNotes" placeholder="Anything important about this task..."></textarea></div>
               </div>
-
-              <div style="margin-top:12px;">
-                <button onclick="addTask()">Save Task</button>
-              </div>
+              <div style="margin-top:12px;"><button onclick="addTask()">Save Task</button></div>
             </div>
           </details>
 
           <details class="card" open>
-            <summary>
-              <span>Task List</span>
-              <span class="summary-right">Filter and manage tasks</span>
-            </summary>
+            <summary><span>Task List</span><span class="summary-right">Filter and manage tasks</span></summary>
             <div class="card-content">
               <div class="filters" id="outletFilters"></div>
               <div class="filters" id="statusFilters"></div>
@@ -555,44 +584,22 @@
 
         <div>
           <details class="card" open>
-            <summary>
-              <span>Log Workout</span>
-              <span class="summary-right">Track sessions quickly</span>
-            </summary>
+            <summary><span>Log Workout</span><span class="summary-right">Track sessions quickly</span></summary>
             <div class="card-content">
               <div class="form-grid">
-                <div>
-                  <label for="workoutType">Workout type</label>
-                  <input id="workoutType" placeholder="Back + Biceps" />
-                </div>
-
-                <div>
-                  <label for="workoutDuration">Minutes</label>
-                  <input id="workoutDuration" type="number" placeholder="60" />
-                </div>
+                <div><label for="workoutType">Workout type</label><input id="workoutType" placeholder="Back + Biceps" /></div>
+                <div><label for="workoutDuration">Minutes</label><input id="workoutDuration" type="number" placeholder="60" /></div>
               </div>
-
               <div class="form-grid full" style="margin-top:12px;">
-                <div>
-                  <label for="workoutNotes">Workout notes</label>
-                  <textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea>
-                </div>
+                <div><label for="workoutNotes">Workout notes</label><textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea></div>
               </div>
-
-              <div style="margin-top:12px;">
-                <button onclick="addWorkout()">Save Workout</button>
-              </div>
+              <div style="margin-top:12px;"><button onclick="addWorkout()">Save Workout</button></div>
             </div>
           </details>
 
           <details class="card" open>
-            <summary>
-              <span>Workout Log</span>
-              <span class="summary-right">Recent entries</span>
-            </summary>
-            <div class="card-content">
-              <div id="workoutList" class="workout-list"></div>
-            </div>
+            <summary><span>Workout Log</span><span class="summary-right">Recent entries</span></summary>
+            <div class="card-content"><div id="workoutList" class="workout-list"></div></div>
           </details>
         </div>
       </div>
@@ -602,88 +609,71 @@
       <div class="layout">
         <div>
           <details class="card" open>
-            <summary>
-              <span>Create Template</span>
-              <span class="summary-right">Reusable recurring task</span>
-            </summary>
+            <summary><span id="templateFormTitle">Create Template</span><span class="summary-right">Reusable recurring task</span></summary>
             <div class="card-content">
+              <input type="hidden" id="editingTemplateId" />
               <div class="form-grid">
-                <div>
-                  <label for="templateTitle">Template title</label>
-                  <input id="templateTitle" placeholder="Batch 3 content posts" />
-                </div>
-
-                <div>
-                  <label for="templateOutlet">Outlet</label>
+                <div><label for="templateTitle">Template title</label><input id="templateTitle" placeholder="Batch 3 content posts" /></div>
+                <div><label for="templateOutlet">Outlet</label>
                   <select id="templateOutlet">
-                    <option>Content</option>
-                    <option>Etsy</option>
-                    <option>AI Services</option>
-                    <option>Fitness</option>
-                    <option>Personal</option>
-                    <option>School</option>
+                    <option>Content</option><option>Etsy</option><option>AI Services</option><option>Fitness</option><option>Personal</option><option>School</option>
                   </select>
                 </div>
-
-                <div>
-                  <label for="templateRecurrence">Recurrence</label>
+                <div><label for="templateRecurrence">Recurrence</label>
                   <select id="templateRecurrence">
                     <option>Daily</option>
                     <option>Weekdays</option>
+                    <option>Selected Days</option>
                     <option>Weekly</option>
                     <option>Monthly</option>
+                    <option>Custom Interval</option>
                     <option>Often / Manual</option>
                   </select>
                 </div>
-
-                <div>
-                  <label for="templateDefaultDueMode">Default due mode</label>
+                <div><label for="templateDefaultDueMode">Default due mode</label>
                   <select id="templateDefaultDueMode">
                     <option value="today">Today</option>
                     <option value="tomorrow">Tomorrow</option>
                     <option value="next7">Within 7 days</option>
                     <option value="none">No automatic due date</option>
+                    <option value="fixed">Fixed due date</option>
                   </select>
                 </div>
-
-                <div>
-                  <label for="templateImpact">Impact (1-5)</label>
-                  <select id="templateImpact">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                <div><label for="templateFixedDueDate">Fixed due date</label><input id="templateFixedDueDate" type="date" /></div>
+                <div><label for="templateIntervalNumber">Interval number</label><input id="templateIntervalNumber" type="number" min="1" placeholder="2" /></div>
+                <div><label for="templateIntervalUnit">Interval unit</label>
+                  <select id="templateIntervalUnit">
+                    <option value="days">Days</option>
+                    <option value="weeks">Weeks</option>
+                    <option value="months">Months</option>
                   </select>
                 </div>
+                <div><label for="templateImpact">Impact (1-5)</label><select id="templateImpact"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="templateUrgency">Urgency (1-5)</label><select id="templateUrgency"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="templateRevenue">Revenue Value (1-5)</label><select id="templateRevenue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                <div><label for="templateEffort">Effort (1-5)</label><select id="templateEffort"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+              </div>
 
-                <div>
-                  <label for="templateUrgency">Urgency (1-5)</label>
-                  <select id="templateUrgency">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="templateRevenue">Revenue Value (1-5)</label>
-                  <select id="templateRevenue">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="templateEffort">Effort (1-5)</label>
-                  <select id="templateEffort">
-                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                  </select>
+              <div style="margin-top:14px;">
+                <label>Days of week</label>
+                <div class="day-picks">
+                  <label class="day-option"><input type="checkbox" value="1" class="template-day" /> Mon</label>
+                  <label class="day-option"><input type="checkbox" value="2" class="template-day" /> Tue</label>
+                  <label class="day-option"><input type="checkbox" value="3" class="template-day" /> Wed</label>
+                  <label class="day-option"><input type="checkbox" value="4" class="template-day" /> Thu</label>
+                  <label class="day-option"><input type="checkbox" value="5" class="template-day" /> Fri</label>
+                  <label class="day-option"><input type="checkbox" value="6" class="template-day" /> Sat</label>
+                  <label class="day-option"><input type="checkbox" value="0" class="template-day" /> Sun</label>
                 </div>
               </div>
 
               <div class="form-grid full" style="margin-top:12px;">
-                <div>
-                  <label for="templateNotes">Template notes</label>
-                  <textarea id="templateNotes" placeholder="Use for repeat content, workouts, admin, etc."></textarea>
-                </div>
+                <div><label for="templateNotes">Template notes</label><textarea id="templateNotes" placeholder="Use for repeat content, workouts, admin, etc."></textarea></div>
               </div>
 
-              <div style="margin-top:12px;">
-                <button onclick="addTemplate()">Save Template</button>
+              <div class="button-row" style="margin-top:12px;">
+                <button onclick="saveTemplate()">Save Template</button>
+                <button class="secondary-btn" type="button" onclick="clearTemplateForm()">Clear Form</button>
               </div>
             </div>
           </details>
@@ -691,15 +681,83 @@
 
         <div>
           <details class="card" open>
-            <summary>
-              <span>Template Library</span>
-              <span class="summary-right">One-click task generation</span>
-            </summary>
-            <div class="card-content">
-              <div id="templateList" class="template-list"></div>
-            </div>
+            <summary><span>Template Library</span><span class="summary-right">One-click task generation</span></summary>
+            <div class="card-content"><div id="templateList" class="template-list"></div></div>
           </details>
         </div>
+      </div>
+    </section>
+
+    <section id="tab-prompts" class="tab-section">
+      <div class="two-col">
+        <div class="panel">
+          <h2 class="section-title" id="promptFormTitle">Add Prompt</h2>
+          <input type="hidden" id="editingPromptId" />
+
+          <div class="form-grid">
+            <div>
+              <label for="promptTitle">Prompt title</label>
+              <input id="promptTitle" placeholder="Weekly meal planning coach" />
+            </div>
+            <div>
+              <label for="promptCategory">Category</label>
+              <select id="promptCategory">
+                <option>Gym Routine</option>
+                <option>General Wellness</option>
+                <option>Budgeting</option>
+                <option>Task Management</option>
+                <option>Self Growth</option>
+                <option>Content</option>
+                <option>Business</option>
+                <option>School</option>
+                <option>Custom</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid full" style="margin-top:12px;">
+            <div>
+              <label for="promptText">Prompt text</label>
+              <textarea id="promptText" placeholder="Paste or write the prompt here..."></textarea>
+            </div>
+            <div>
+              <label for="promptNotes">Notes</label>
+              <textarea id="promptNotes" placeholder="Optional note about when to use it"></textarea>
+            </div>
+          </div>
+
+          <div class="button-row" style="margin-top:12px;">
+            <button onclick="savePrompt()">Save Prompt</button>
+            <button class="secondary-btn" type="button" onclick="clearPromptForm()">Clear Form</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="section-title">Prompt Library</h2>
+          <div class="filters" id="promptCategoryFilters"></div>
+          <div id="promptList" class="prompt-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-calendar" class="tab-section">
+      <div class="panel">
+        <div class="calendar-topbar">
+          <button class="secondary-btn" style="width:auto;" onclick="changeCalendarMonth(-1)">Previous</button>
+          <button class="secondary-btn" style="width:auto;" onclick="goToTodayMonth()">Today</button>
+          <button class="secondary-btn" style="width:auto;" onclick="changeCalendarMonth(1)">Next</button>
+        </div>
+
+        <div style="margin-top:12px;">
+          <h2 class="section-title" id="calendarMonthLabel">Calendar</h2>
+        </div>
+
+        <div class="toggle-line">
+          <input type="checkbox" id="showCalendarInlineToggle" onchange="toggleInlineCalendar()" />
+          <label for="showCalendarInlineToggle" style="margin:0;">Show calendar in main view</label>
+        </div>
+
+        <div id="calendarTabContent"></div>
       </div>
     </section>
 
@@ -708,30 +766,14 @@
         <div class="panel">
           <h2 class="section-title">Weekly Review</h2>
           <div class="form-grid">
-            <div>
-              <label for="weeklyWeekLabel">Week label</label>
-              <input id="weeklyWeekLabel" placeholder="Week of Apr 10, 2026" />
-            </div>
-            <div>
-              <label for="weeklyWins">Wins</label>
-              <input id="weeklyWins" placeholder="What went well?" />
-            </div>
+            <div><label for="weeklyWeekLabel">Week label</label><input id="weeklyWeekLabel" placeholder="Week of Apr 10, 2026" /></div>
+            <div><label for="weeklyWins">Wins</label><input id="weeklyWins" placeholder="What went well?" /></div>
           </div>
-
           <div class="form-grid full" style="margin-top:12px;">
-            <div>
-              <label for="weeklyBlockers">Blockers</label>
-              <textarea id="weeklyBlockers" placeholder="What got in the way?"></textarea>
-            </div>
-            <div>
-              <label for="weeklyNextFocus">Next focus</label>
-              <textarea id="weeklyNextFocus" placeholder="What are you focusing on next week?"></textarea>
-            </div>
+            <div><label for="weeklyBlockers">Blockers</label><textarea id="weeklyBlockers" placeholder="What got in the way?"></textarea></div>
+            <div><label for="weeklyNextFocus">Next focus</label><textarea id="weeklyNextFocus" placeholder="What are you focusing on next week?"></textarea></div>
           </div>
-
-          <div style="margin-top:12px;">
-            <button onclick="saveWeeklyReview()">Save Weekly Review</button>
-          </div>
+          <div style="margin-top:12px;"><button onclick="saveWeeklyReview()">Save Weekly Review</button></div>
         </div>
 
         <div class="panel">
@@ -746,30 +788,14 @@
         <div class="panel">
           <h2 class="section-title">Monthly Review</h2>
           <div class="form-grid">
-            <div>
-              <label for="monthlyMonth">Month</label>
-              <input id="monthlyMonth" type="month" />
-            </div>
-            <div>
-              <label for="monthlyHighlight">Main highlight</label>
-              <input id="monthlyHighlight" placeholder="Biggest win of the month" />
-            </div>
+            <div><label for="monthlyMonth">Month</label><input id="monthlyMonth" type="month" /></div>
+            <div><label for="monthlyHighlight">Main highlight</label><input id="monthlyHighlight" placeholder="Biggest win of the month" /></div>
           </div>
-
           <div class="form-grid full" style="margin-top:12px;">
-            <div>
-              <label for="monthlyLessons">Lessons</label>
-              <textarea id="monthlyLessons" placeholder="What did you learn?"></textarea>
-            </div>
-            <div>
-              <label for="monthlyNextMonth">Next month focus</label>
-              <textarea id="monthlyNextMonth" placeholder="What matters next month?"></textarea>
-            </div>
+            <div><label for="monthlyLessons">Lessons</label><textarea id="monthlyLessons" placeholder="What did you learn?"></textarea></div>
+            <div><label for="monthlyNextMonth">Next month focus</label><textarea id="monthlyNextMonth" placeholder="What matters next month?"></textarea></div>
           </div>
-
-          <div style="margin-top:12px;">
-            <button onclick="saveMonthlyReview()">Save Monthly Review</button>
-          </div>
+          <div style="margin-top:12px;"><button onclick="saveMonthlyReview()">Save Monthly Review</button></div>
         </div>
 
         <div class="panel">
@@ -781,19 +807,24 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "operatorOSDataV4";
+    const STORAGE_KEY = "operatorOSDataV43";
 
     let state = {
       tasks: [],
       workouts: [],
       templates: [],
+      prompts: [],
       weeklyReviews: [],
       monthlyReviews: [],
-      filters: {
-        outlet: "All",
-        status: "Open"
-      },
-      activeTab: "today"
+      filters: { outlet: "All", status: "Open" },
+      promptFilter: "All",
+      activeTab: "today",
+      ui: {
+        showCalendarInline: false,
+        calendarMonth: new Date().getMonth(),
+        calendarYear: new Date().getFullYear(),
+        selectedCalendarDate: new Date().toISOString().split("T")[0]
+      }
     };
 
     function safeLoad() {
@@ -805,10 +836,18 @@
             tasks: parsed.tasks || [],
             workouts: parsed.workouts || [],
             templates: parsed.templates || [],
+            prompts: parsed.prompts || [],
             weeklyReviews: parsed.weeklyReviews || [],
             monthlyReviews: parsed.monthlyReviews || [],
             filters: parsed.filters || { outlet: "All", status: "Open" },
-            activeTab: parsed.activeTab || "today"
+            promptFilter: parsed.promptFilter || "All",
+            activeTab: parsed.activeTab || "today",
+            ui: {
+              showCalendarInline: parsed.ui?.showCalendarInline || false,
+              calendarMonth: parsed.ui?.calendarMonth ?? new Date().getMonth(),
+              calendarYear: parsed.ui?.calendarYear ?? new Date().getFullYear(),
+              selectedCalendarDate: parsed.ui?.selectedCalendarDate || new Date().toISOString().split("T")[0]
+            }
           };
         }
       } catch (error) {
@@ -865,10 +904,7 @@
     function setTab(tabName) {
       state.activeTab = tabName;
       safeSave();
-      document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.getElementById("tab-" + tabName).classList.add("active");
-      [...document.querySelectorAll(".tab-btn")].find(btn => btn.textContent.toLowerCase().includes(tabName.replace("-", " ")))?.classList.add("active");
+      restoreTab();
     }
 
     function restoreTab() {
@@ -876,18 +912,36 @@
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       const tab = document.getElementById("tab-" + state.activeTab);
       if (tab) tab.classList.add("active");
-      const buttons = document.querySelectorAll(".tab-btn");
-      buttons.forEach(btn => {
+
+      document.querySelectorAll(".tab-btn").forEach(btn => {
         const text = btn.textContent.trim().toLowerCase();
         if (
           (state.activeTab === "today" && text === "today") ||
           (state.activeTab === "planner" && text === "planner") ||
           (state.activeTab === "templates" && text === "template library") ||
+          (state.activeTab === "prompts" && text === "prompt library") ||
+          (state.activeTab === "calendar" && text === "calendar") ||
           (state.activeTab === "weekly" && text === "weekly review") ||
           (state.activeTab === "monthly" && text === "monthly review")
-        ) {
-          btn.classList.add("active");
-        }
+        ) btn.classList.add("active");
+      });
+    }
+
+    function getDueDateFromMode(mode, fixedDate = "") {
+      if (mode === "today") return todayString();
+      if (mode === "tomorrow") return getDateOffset(1);
+      if (mode === "next7") return getDateOffset(7);
+      if (mode === "fixed") return fixedDate || "";
+      return "";
+    }
+
+    function getSelectedTemplateDays() {
+      return [...document.querySelectorAll(".template-day:checked")].map(cb => Number(cb.value));
+    }
+
+    function setSelectedTemplateDays(days) {
+      document.querySelectorAll(".template-day").forEach(cb => {
+        cb.checked = days.includes(Number(cb.value));
       });
     }
 
@@ -912,18 +966,8 @@
 
       state.tasks.unshift({
         id: Date.now(),
-        title,
-        outlet,
-        dueDate,
-        impact,
-        urgency,
-        revenue,
-        effort,
-        notes,
-        score,
-        priority,
-        done: status === "done",
-        sourceTemplateId: null
+        title, outlet, dueDate, impact, urgency, revenue, effort, notes,
+        score, priority, done: status === "done", sourceTemplateId: null
       });
 
       safeSave();
@@ -954,46 +998,116 @@
       clearWorkoutForm();
     }
 
-    function addTemplate() {
+    function saveTemplate() {
+      const editingId = document.getElementById("editingTemplateId").value;
       const title = document.getElementById("templateTitle").value.trim();
       const outlet = document.getElementById("templateOutlet").value;
       const recurrence = document.getElementById("templateRecurrence").value;
       const defaultDueMode = document.getElementById("templateDefaultDueMode").value;
+      const fixedDueDate = document.getElementById("templateFixedDueDate").value;
+      const intervalNumber = Number(document.getElementById("templateIntervalNumber").value || 0);
+      const intervalUnit = document.getElementById("templateIntervalUnit").value;
       const impact = Number(document.getElementById("templateImpact").value);
       const urgency = Number(document.getElementById("templateUrgency").value);
       const revenue = Number(document.getElementById("templateRevenue").value);
       const effort = Number(document.getElementById("templateEffort").value);
       const notes = document.getElementById("templateNotes").value.trim();
+      const selectedDays = getSelectedTemplateDays();
 
       if (!title) {
         alert("Please enter a template title.");
         return;
       }
 
-      state.templates.unshift({
-        id: Date.now(),
-        title,
-        outlet,
-        recurrence,
-        defaultDueMode,
-        impact,
-        urgency,
-        revenue,
-        effort,
-        notes,
-        lastGeneratedDate: null
-      });
+      if (recurrence === "Custom Interval" && intervalNumber < 1) {
+        alert("Enter an interval number greater than 0.");
+        return;
+      }
+
+      const payload = {
+        title, outlet, recurrence, defaultDueMode, fixedDueDate,
+        intervalNumber, intervalUnit, impact, urgency, revenue, effort, notes, selectedDays
+      };
+
+      if (editingId) {
+        const template = state.templates.find(t => t.id === Number(editingId));
+        if (!template) return;
+        Object.assign(template, payload);
+      } else {
+        state.templates.unshift({
+          id: Date.now(),
+          ...payload,
+          lastGeneratedDate: null,
+          createdAt: new Date().toISOString()
+        });
+      }
 
       safeSave();
       renderAll();
       clearTemplateForm();
     }
 
-    function getDueDateFromMode(mode) {
-      if (mode === "today") return todayString();
-      if (mode === "tomorrow") return getDateOffset(1);
-      if (mode === "next7") return getDateOffset(7);
-      return "";
+    function editTemplate(id) {
+      const template = state.templates.find(t => t.id === id);
+      if (!template) return;
+
+      document.getElementById("editingTemplateId").value = template.id;
+      document.getElementById("templateFormTitle").textContent = "Edit Template";
+      document.getElementById("templateTitle").value = template.title || "";
+      document.getElementById("templateOutlet").value = template.outlet || "Content";
+      document.getElementById("templateRecurrence").value = template.recurrence || "Daily";
+      document.getElementById("templateDefaultDueMode").value = template.defaultDueMode || "today";
+      document.getElementById("templateFixedDueDate").value = template.fixedDueDate || "";
+      document.getElementById("templateIntervalNumber").value = template.intervalNumber || "";
+      document.getElementById("templateIntervalUnit").value = template.intervalUnit || "days";
+      document.getElementById("templateImpact").value = String(template.impact || 3);
+      document.getElementById("templateUrgency").value = String(template.urgency || 3);
+      document.getElementById("templateRevenue").value = String(template.revenue || 3);
+      document.getElementById("templateEffort").value = String(template.effort || 3);
+      document.getElementById("templateNotes").value = template.notes || "";
+      setSelectedTemplateDays(template.selectedDays || []);
+      state.activeTab = "templates";
+      safeSave();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function daysBetween(dateA, dateB) {
+      const a = new Date(dateA + "T00:00:00");
+      const b = new Date(dateB + "T00:00:00");
+      return Math.floor((a - b) / (1000 * 60 * 60 * 24));
+    }
+
+    function monthsBetween(now, start) {
+      const a = new Date(now + "T00:00:00");
+      const b = new Date(start + "T00:00:00");
+      return (a.getFullYear() - b.getFullYear()) * 12 + (a.getMonth() - b.getMonth());
+    }
+
+    function shouldGenerateToday(template) {
+      const today = new Date();
+      const day = today.getDay();
+      const todayVal = todayString();
+
+      if (template.lastGeneratedDate === todayVal) return false;
+      if (template.recurrence === "Daily") return true;
+      if (template.recurrence === "Weekdays") return day >= 1 && day <= 5;
+      if (template.recurrence === "Selected Days") return (template.selectedDays || []).includes(day);
+      if (template.recurrence === "Weekly") return day === 1;
+      if (template.recurrence === "Monthly") return today.getDate() === 1;
+
+      if (template.recurrence === "Custom Interval") {
+        const interval = Number(template.intervalNumber || 0);
+        const unit = template.intervalUnit || "days";
+        const anchor = (template.lastGeneratedDate || (template.createdAt || today.toISOString()).split("T")[0]);
+
+        if (interval < 1) return false;
+        if (unit === "days") return daysBetween(todayVal, anchor) >= interval;
+        if (unit === "weeks") return daysBetween(todayVal, anchor) >= interval * 7;
+        if (unit === "months") return monthsBetween(todayVal, anchor) >= interval;
+      }
+
+      return false;
     }
 
     function createTaskFromTemplate(templateId) {
@@ -1007,7 +1121,7 @@
         id: Date.now(),
         title: template.title,
         outlet: template.outlet,
-        dueDate: getDueDateFromMode(template.defaultDueMode),
+        dueDate: getDueDateFromMode(template.defaultDueMode, template.fixedDueDate),
         impact: template.impact,
         urgency: template.urgency,
         revenue: template.revenue,
@@ -1024,28 +1138,16 @@
       renderAll();
     }
 
-    function shouldGenerateToday(template) {
-      const today = new Date();
-      const day = today.getDay();
-      const todayVal = todayString();
-
-      if (template.lastGeneratedDate === todayVal) return false;
-      if (template.recurrence === "Daily") return true;
-      if (template.recurrence === "Weekdays") return day >= 1 && day <= 5;
-      if (template.recurrence === "Weekly") return day === 1;
-      if (template.recurrence === "Monthly") return today.getDate() === 1;
-      return false;
-    }
-
     function generateRecurringTasks() {
       let generated = 0;
 
       state.templates.forEach(template => {
         if (!shouldGenerateToday(template)) return;
 
+        const generatedDue = getDueDateFromMode(template.defaultDueMode, template.fixedDueDate);
         const alreadyExists = state.tasks.some(task =>
           task.sourceTemplateId === template.id &&
-          task.dueDate === getDueDateFromMode(template.defaultDueMode) &&
+          task.dueDate === generatedDue &&
           !task.done
         );
 
@@ -1058,7 +1160,7 @@
           id: Date.now() + Math.floor(Math.random() * 100000),
           title: template.title,
           outlet: template.outlet,
-          dueDate: getDueDateFromMode(template.defaultDueMode),
+          dueDate: generatedDue,
           impact: template.impact,
           urgency: template.urgency,
           revenue: template.revenue,
@@ -1079,6 +1181,78 @@
       alert(generated + " recurring task(s) generated.");
     }
 
+    function savePrompt() {
+      const editingId = document.getElementById("editingPromptId").value;
+      const title = document.getElementById("promptTitle").value.trim();
+      const category = document.getElementById("promptCategory").value;
+      const text = document.getElementById("promptText").value.trim();
+      const notes = document.getElementById("promptNotes").value.trim();
+
+      if (!title || !text) {
+        alert("Please enter a prompt title and prompt text.");
+        return;
+      }
+
+      const payload = { title, category, text, notes };
+
+      if (editingId) {
+        const prompt = state.prompts.find(p => p.id === Number(editingId));
+        if (!prompt) return;
+        Object.assign(prompt, payload);
+      } else {
+        state.prompts.unshift({
+          id: Date.now(),
+          ...payload,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      safeSave();
+      renderAll();
+      clearPromptForm();
+    }
+
+    function editPrompt(id) {
+      const prompt = state.prompts.find(p => p.id === id);
+      if (!prompt) return;
+
+      document.getElementById("editingPromptId").value = prompt.id;
+      document.getElementById("promptFormTitle").textContent = "Edit Prompt";
+      document.getElementById("promptTitle").value = prompt.title || "";
+      document.getElementById("promptCategory").value = prompt.category || "Task Management";
+      document.getElementById("promptText").value = prompt.text || "";
+      document.getElementById("promptNotes").value = prompt.notes || "";
+      state.activeTab = "prompts";
+      safeSave();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function copyPrompt(id) {
+      const prompt = state.prompts.find(p => p.id === id);
+      if (!prompt) return;
+
+      try {
+        await navigator.clipboard.writeText(prompt.text);
+        alert("Prompt copied.");
+      } catch (error) {
+        alert("Copy failed in this browser. You can still copy manually.");
+      }
+    }
+
+    function deletePrompt(id) {
+      state.prompts = state.prompts.filter(prompt => prompt.id !== id);
+      safeSave();
+      renderAll();
+      clearPromptForm();
+    }
+
+    function setPromptFilter(category) {
+      state.promptFilter = category;
+      safeSave();
+      renderAll();
+    }
+
     function saveWeeklyReview() {
       const weekLabel = document.getElementById("weeklyWeekLabel").value.trim();
       const wins = document.getElementById("weeklyWins").value.trim();
@@ -1090,14 +1264,7 @@
         return;
       }
 
-      state.weeklyReviews.unshift({
-        id: Date.now(),
-        weekLabel,
-        wins,
-        blockers,
-        nextFocus
-      });
-
+      state.weeklyReviews.unshift({ id: Date.now(), weekLabel, wins, blockers, nextFocus });
       safeSave();
       renderAll();
       clearWeeklyForm();
@@ -1114,14 +1281,7 @@
         return;
       }
 
-      state.monthlyReviews.unshift({
-        id: Date.now(),
-        month,
-        highlight,
-        lessons,
-        nextMonth
-      });
-
+      state.monthlyReviews.unshift({ id: Date.now(), month, highlight, lessons, nextMonth });
       safeSave();
       renderAll();
       clearMonthlyForm();
@@ -1151,6 +1311,7 @@
       state.templates = state.templates.filter(template => template.id !== id);
       safeSave();
       renderAll();
+      clearTemplateForm();
     }
 
     function deleteWeeklyReview(id) {
@@ -1184,15 +1345,30 @@
     }
 
     function clearTemplateForm() {
+      document.getElementById("editingTemplateId").value = "";
+      document.getElementById("templateFormTitle").textContent = "Create Template";
       document.getElementById("templateTitle").value = "";
       document.getElementById("templateNotes").value = "";
       document.getElementById("templateOutlet").value = "Content";
       document.getElementById("templateRecurrence").value = "Daily";
       document.getElementById("templateDefaultDueMode").value = "today";
+      document.getElementById("templateFixedDueDate").value = "";
+      document.getElementById("templateIntervalNumber").value = "";
+      document.getElementById("templateIntervalUnit").value = "days";
       document.getElementById("templateImpact").value = "3";
       document.getElementById("templateUrgency").value = "3";
       document.getElementById("templateRevenue").value = "3";
       document.getElementById("templateEffort").value = "3";
+      setSelectedTemplateDays([]);
+    }
+
+    function clearPromptForm() {
+      document.getElementById("editingPromptId").value = "";
+      document.getElementById("promptFormTitle").textContent = "Add Prompt";
+      document.getElementById("promptTitle").value = "";
+      document.getElementById("promptCategory").value = "Gym Routine";
+      document.getElementById("promptText").value = "";
+      document.getElementById("promptNotes").value = "";
     }
 
     function clearWeeklyForm() {
@@ -1210,20 +1386,29 @@
     }
 
     function clearAllData() {
-      const confirmed = confirm("Clear all tasks, workouts, templates, and reviews?");
+      const confirmed = confirm("Clear all tasks, workouts, templates, prompts, and reviews?");
       if (!confirmed) return;
       state = {
         tasks: [],
         workouts: [],
         templates: [],
+        prompts: [],
         weeklyReviews: [],
         monthlyReviews: [],
         filters: { outlet: "All", status: "Open" },
-        activeTab: "today"
+        promptFilter: "All",
+        activeTab: "today",
+        ui: {
+          showCalendarInline: false,
+          calendarMonth: new Date().getMonth(),
+          calendarYear: new Date().getFullYear(),
+          selectedCalendarDate: new Date().toISOString().split("T")[0]
+        }
       };
       safeSave();
       renderAll();
-      restoreTab();
+      clearTemplateForm();
+      clearPromptForm();
     }
 
     function setOutletFilter(outlet) {
@@ -1264,6 +1449,7 @@
       document.getElementById("openTasks").textContent = open;
       document.getElementById("completedTasks").textContent = completed;
       document.getElementById("templateCount").textContent = state.templates.length;
+      document.getElementById("promptCount").textContent = state.prompts.length;
       document.getElementById("workoutCount").textContent = state.workouts.length;
       document.getElementById("topScore").textContent = top;
     }
@@ -1271,24 +1457,16 @@
     function renderOutletFilters() {
       const container = document.getElementById("outletFilters");
       const outlets = ["All", ...new Set(state.tasks.map(task => task.outlet))];
-
       container.innerHTML = outlets.map(outlet => `
-        <button
-          class="filter-chip ${state.filters.outlet === outlet ? 'active' : ''}"
-          onclick="setOutletFilter(${JSON.stringify(outlet)})"
-        >${escapeHtml(outlet)}</button>
+        <button class="filter-chip ${state.filters.outlet === outlet ? 'active' : ''}" onclick="setOutletFilter(${JSON.stringify(outlet)})">${escapeHtml(outlet)}</button>
       `).join("");
     }
 
     function renderStatusFilters() {
       const container = document.getElementById("statusFilters");
       const statuses = ["Open", "Completed", "All"];
-
       container.innerHTML = statuses.map(status => `
-        <button
-          class="filter-chip ${state.filters.status === status ? 'active' : ''}"
-          onclick="setStatusFilter(${JSON.stringify(status)})"
-        >${escapeHtml(status)}</button>
+        <button class="filter-chip ${state.filters.status === status ? 'active' : ''}" onclick="setStatusFilter(${JSON.stringify(status)})">${escapeHtml(status)}</button>
       `).join("");
     }
 
@@ -1312,10 +1490,7 @@
             <span class="badge ${task.done ? 'done' : task.priority.toLowerCase()}">${task.done ? 'Done' : escapeHtml(task.priority)}</span>
           </div>
 
-          <div class="meta">
-            Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}
-          </div>
-
+          <div class="meta">Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}</div>
           ${task.notes ? `<div class="pill">${escapeHtml(task.notes)}</div>` : ""}
           ${task.sourceTemplateId ? `<div class="pill">From template</div>` : ""}
 
@@ -1348,14 +1523,18 @@
             </div>
             <span class="badge low">Logged</span>
           </div>
-
           ${workout.notes ? `<div class="pill">${escapeHtml(workout.notes)}</div>` : ""}
-
           <div class="button-row" style="margin-top:10px;">
             <button class="danger-btn" onclick="deleteWorkout(${workout.id})">Delete</button>
           </div>
         </div>
       `).join("");
+    }
+
+    function formatSelectedDays(days) {
+      const map = {0:"Sun",1:"Mon",2:"Tue",3:"Wed",4:"Thu",5:"Fri",6:"Sat"};
+      if (!days || !days.length) return "None selected";
+      return days.map(d => map[d]).join(", ");
     }
 
     function renderTemplates() {
@@ -1375,16 +1554,57 @@
             <span class="badge low">${escapeHtml(template.recurrence)}</span>
           </div>
 
-          <div class="meta">
-            Default due: ${escapeHtml(template.defaultDueMode)} • Impact: ${template.impact} • Urgency: ${template.urgency} • Revenue: ${template.revenue} • Effort: ${template.effort}
-          </div>
+          <div class="meta">Default due: ${escapeHtml(template.defaultDueMode)}${template.fixedDueDate ? " • Fixed date: " + escapeHtml(template.fixedDueDate) : ""}</div>
+          <div class="meta">Days: ${escapeHtml(formatSelectedDays(template.selectedDays || []))}</div>
+          <div class="meta">Interval: ${template.intervalNumber ? escapeHtml(String(template.intervalNumber)) + " " + escapeHtml(template.intervalUnit || "days") : "—"}</div>
+          <div class="meta">Impact: ${template.impact} • Urgency: ${template.urgency} • Revenue: ${template.revenue} • Effort: ${template.effort}</div>
 
           ${template.notes ? `<div class="pill">${escapeHtml(template.notes)}</div>` : ""}
           ${template.lastGeneratedDate ? `<div class="pill">Last generated: ${escapeHtml(template.lastGeneratedDate)}</div>` : ""}
 
           <div class="button-row" style="margin-top:10px;">
             <button onclick="createTaskFromTemplate(${template.id})">Add Task From Template</button>
+            <button class="secondary-btn" onclick="editTemplate(${template.id})">Edit</button>
             <button class="danger-btn" onclick="deleteTemplate(${template.id})">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderPromptFilters() {
+      const container = document.getElementById("promptCategoryFilters");
+      const categories = ["All", ...new Set(state.prompts.map(p => p.category))];
+      container.innerHTML = categories.map(category => `
+        <button class="filter-chip ${state.promptFilter === category ? 'active' : ''}" onclick="setPromptFilter(${JSON.stringify(category)})">${escapeHtml(category)}</button>
+      `).join("");
+    }
+
+    function renderPrompts() {
+      const promptList = document.getElementById("promptList");
+      const prompts = [...state.prompts].filter(p => state.promptFilter === "All" || p.category === state.promptFilter);
+
+      if (!prompts.length) {
+        promptList.innerHTML = '<div class="empty">No prompts in this category yet.</div>';
+        return;
+      }
+
+      promptList.innerHTML = prompts.map(prompt => `
+        <div class="prompt-item">
+          <div class="row">
+            <div>
+              <h3>${escapeHtml(prompt.title)}</h3>
+              <div class="meta">${escapeHtml(prompt.category)}</div>
+            </div>
+            <span class="badge low">${escapeHtml(prompt.category)}</span>
+          </div>
+
+          ${prompt.notes ? `<div class="pill">${escapeHtml(prompt.notes)}</div>` : ""}
+          <div class="prompt-text">${escapeHtml(prompt.text)}</div>
+
+          <div class="button-row" style="margin-top:10px;">
+            <button onclick="copyPrompt(${prompt.id})">Copy Prompt</button>
+            <button class="secondary-btn" onclick="editPrompt(${prompt.id})">Edit</button>
+            <button class="danger-btn" onclick="deletePrompt(${prompt.id})">Delete</button>
           </div>
         </div>
       `).join("");
@@ -1455,25 +1675,171 @@
         `).join("");
       }
 
-      const topThree = [...state.tasks]
-        .filter(task => !task.done)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 3);
-
+      const topThree = [...state.tasks].filter(task => !task.done).sort((a, b) => b.score - a.score).slice(0, 3);
       document.getElementById("topThreeList").innerHTML = topThree.length
         ? topThree.map(task => `<div>• ${escapeHtml(task.title)} (${escapeHtml(task.outlet)})</div>`).join("")
         : "No open tasks yet.";
 
       const recurringCount = state.templates.filter(t => shouldGenerateToday({...t, lastGeneratedDate: null})).length;
       document.getElementById("recurringSummary").textContent =
-        state.templates.length
-          ? recurringCount + " template(s) are eligible for recurring generation today."
-          : "No recurring templates created yet.";
+        state.templates.length ? recurringCount + " template(s) are eligible for recurring generation today." : "No recurring templates created yet.";
 
       const recentWorkout = state.workouts[0];
       document.getElementById("todayWorkoutSummary").innerHTML = recentWorkout
         ? `Latest: ${escapeHtml(recentWorkout.type)} (${escapeHtml(recentWorkout.duration)} min)`
         : "No workouts logged yet.";
+    }
+
+    function getTasksForDate(dateString) {
+      return state.tasks
+        .filter(task => task.dueDate === dateString)
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function getCalendarMatrix(year, month) {
+      const firstDay = new Date(year, month, 1);
+      const startDay = firstDay.getDay();
+      const startDate = new Date(year, month, 1 - startDay);
+      const matrix = [];
+
+      for (let i = 0; i < 42; i++) {
+        const cellDate = new Date(startDate);
+        cellDate.setDate(startDate.getDate() + i);
+        matrix.push(cellDate);
+      }
+      return matrix;
+    }
+
+    function formatDateYMD(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function selectCalendarDate(dateStr) {
+      state.ui.selectedCalendarDate = dateStr;
+      safeSave();
+      renderCalendar();
+    }
+
+    function changeCalendarMonth(delta) {
+      state.ui.calendarMonth += delta;
+      if (state.ui.calendarMonth < 0) {
+        state.ui.calendarMonth = 11;
+        state.ui.calendarYear -= 1;
+      }
+      if (state.ui.calendarMonth > 11) {
+        state.ui.calendarMonth = 0;
+        state.ui.calendarYear += 1;
+      }
+      safeSave();
+      renderCalendar();
+    }
+
+    function goToTodayMonth() {
+      const now = new Date();
+      state.ui.calendarMonth = now.getMonth();
+      state.ui.calendarYear = now.getFullYear();
+      state.ui.selectedCalendarDate = todayString();
+      safeSave();
+      renderCalendar();
+    }
+
+    function toggleInlineCalendar() {
+      state.ui.showCalendarInline = document.getElementById("showCalendarInlineToggle").checked;
+      safeSave();
+      renderCalendar();
+    }
+
+    function renderCalendarBlock(containerId, titleText) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const year = state.ui.calendarYear;
+      const month = state.ui.calendarMonth;
+      const selected = state.ui.selectedCalendarDate;
+      const monthName = new Date(year, month, 1).toLocaleString("en-US", { month: "long", year: "numeric" });
+      document.getElementById("calendarMonthLabel").textContent = monthName;
+
+      const matrix = getCalendarMatrix(year, month);
+      const weekdayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+      const grid = `
+        <div class="calendar-shell">
+          <div>
+            ${titleText ? `<h3 class="section-title">${escapeHtml(titleText)}</h3>` : ""}
+            <div class="calendar-grid">
+              ${weekdayNames.map(name => `<div class="calendar-head">${name}</div>`).join("")}
+              ${matrix.map(dateObj => {
+                const dateStr = formatDateYMD(dateObj);
+                const inMonth = dateObj.getMonth() === month;
+                const tasks = getTasksForDate(dateStr);
+                const isToday = dateStr === todayString();
+                const isSelected = dateStr === selected;
+
+                return `
+                  <div class="calendar-day ${!inMonth ? 'muted' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectCalendarDate('${dateStr}')">
+                    <div class="calendar-date">${dateObj.getDate()}</div>
+                    <div class="calendar-count">${tasks.length} task${tasks.length === 1 ? '' : 's'}</div>
+                    ${tasks.slice(0,2).map(task => `<div class="calendar-mini-task">${escapeHtml(task.title)}</div>`).join("")}
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <div>
+            <div class="panel" style="margin-bottom:0;">
+              <h3 class="section-title">Selected Date</h3>
+              <div class="meta">${escapeHtml(selected)}</div>
+              <div class="divider"></div>
+              <div class="task-list">
+                ${getTasksForDate(selected).length
+                  ? getTasksForDate(selected).map(task => `
+                    <div class="task ${task.done ? 'completed-task' : ''}">
+                      <div class="row">
+                        <div>
+                          <h3>${escapeHtml(task.title)}</h3>
+                          <div class="meta">Outlet: ${escapeHtml(task.outlet)}</div>
+                        </div>
+                        <span class="badge ${task.done ? 'done' : task.priority.toLowerCase()}">${task.done ? 'Done' : escapeHtml(task.priority)}</span>
+                      </div>
+                      <div class="meta">Score: ${task.score}</div>
+                      ${task.notes ? `<div class="pill">${escapeHtml(task.notes)}</div>` : ""}
+                    </div>
+                  `).join("")
+                  : `<div class="empty">No tasks due on this date.</div>`
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = grid;
+    }
+
+    function renderCalendar() {
+      const toggle = document.getElementById("showCalendarInlineToggle");
+      if (toggle) toggle.checked = !!state.ui.showCalendarInline;
+
+      renderCalendarBlock("calendarTabContent", "");
+      const inlineWrap = document.getElementById("inlineCalendarWrap");
+
+      if (state.ui.showCalendarInline) {
+        inlineWrap.innerHTML = `
+          <div class="panel">
+            <h2 class="section-title">Calendar Snapshot</h2>
+            <div class="meta">This is the same live calendar shown in the Calendar tab.</div>
+            <div class="divider"></div>
+            <div id="inlineCalendarContent"></div>
+          </div>
+        `;
+        renderCalendarBlock("inlineCalendarContent", "");
+      } else {
+        inlineWrap.innerHTML = "";
+      }
     }
 
     function seedDemoData() {
@@ -1497,28 +1863,28 @@
           id: Date.now() + 2,
           title: "Chest + triceps workout",
           outlet: "Fitness",
-          dueDate: todayString(),
+          dueDate: getDateOffset(1),
           impact: 4,
           urgency: 3,
           revenue: 1,
           effort: 2,
-          notes: "Log weights and reps.",
+          notes: "Push day.",
           score: 10,
           priority: "High",
           done: false,
-          sourceTemplateId: 9002
+          sourceTemplateId: null
         },
         {
           id: Date.now() + 3,
-          title: "Follow up with 3 automation leads",
-          outlet: "AI Services",
-          dueDate: getDateOffset(1),
-          impact: 5,
-          urgency: 5,
-          revenue: 5,
-          effort: 3,
-          notes: "Send value-first follow-up.",
-          score: 17,
+          title: "Budget review",
+          outlet: "Personal",
+          dueDate: getDateOffset(3),
+          impact: 4,
+          urgency: 3,
+          revenue: 3,
+          effort: 2,
+          notes: "Check spending and adjust.",
+          score: 12,
           priority: "High",
           done: false,
           sourceTemplateId: null
@@ -1540,53 +1906,43 @@
           id: 9001,
           title: "Batch 3 short-form content posts",
           outlet: "Content",
-          recurrence: "Daily",
+          recurrence: "Custom Interval",
           defaultDueMode: "today",
+          fixedDueDate: "",
+          intervalNumber: 2,
+          intervalUnit: "days",
           impact: 5,
           urgency: 4,
           revenue: 4,
           effort: 2,
-          notes: "Use for daily content rhythm.",
-          lastGeneratedDate: todayString()
-        },
-        {
-          id: 9002,
-          title: "Chest + triceps workout",
-          outlet: "Fitness",
-          recurrence: "Weekly",
-          defaultDueMode: "today",
-          impact: 4,
-          urgency: 3,
-          revenue: 1,
-          effort: 2,
-          notes: "Weekly push day.",
-          lastGeneratedDate: null
+          notes: "Repeat every 2 days.",
+          selectedDays: [],
+          lastGeneratedDate: todayString(),
+          createdAt: new Date().toISOString()
         }
       ];
 
-      state.weeklyReviews = [
+      state.prompts = [
         {
-          id: Date.now() + 5,
-          weekLabel: "Week of Apr 10, 2026",
-          wins: "Published app V3 and fixed bugs.",
-          blockers: "Time and setup friction.",
-          nextFocus: "Use templates and recurring tasks."
+          id: 7001,
+          title: "Workout plan optimizer",
+          category: "Gym Routine",
+          text: "Help me improve this workout routine for my goals, schedule, and recovery. Suggest a better split, exercise order, and progression plan.",
+          notes: "Use when adjusting training blocks.",
+          createdAt: new Date().toISOString()
         }
       ];
 
-      state.monthlyReviews = [
-        {
-          id: Date.now() + 6,
-          month: "2026-04",
-          highlight: "Built and launched Operator OS.",
-          lessons: "Shipping small works better than waiting.",
-          nextMonth: "Add sync and stronger dashboard flows."
-        }
-      ];
-
+      state.weeklyReviews = [];
+      state.monthlyReviews = [];
       state.filters = { outlet: "All", status: "Open" };
+      state.promptFilter = "All";
+      state.ui.showCalendarInline = true;
+      state.ui.selectedCalendarDate = todayString();
       safeSave();
       renderAll();
+      clearTemplateForm();
+      clearPromptForm();
     }
 
     function renderAll() {
@@ -1596,9 +1952,12 @@
       renderTasks();
       renderWorkouts();
       renderTemplates();
+      renderPromptFilters();
+      renderPrompts();
       renderWeeklyReviews();
       renderMonthlyReviews();
       renderTodayDashboard();
+      renderCalendar();
       restoreTab();
     }
 
