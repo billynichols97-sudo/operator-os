@@ -13,7 +13,6 @@
       --text:#e6edf3;
       --muted:#97a6ba;
       --accent:#42d3b4;
-      --accent-2:#7c8cff;
       --danger:#ff7b72;
       --warn:#ffb454;
       --success:#58d68d;
@@ -31,13 +30,13 @@
     }
 
     .app{
-      max-width:1200px;
+      max-width:1280px;
       margin:0 auto;
       padding:20px;
     }
 
     .hero,.panel,details.card{
-      background:rgba(22,27,34,.94);
+      background:rgba(22,27,34,.95);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -62,7 +61,7 @@
     .stats{
       margin-top:18px;
       display:grid;
-      grid-template-columns:repeat(5,1fr);
+      grid-template-columns:repeat(6,1fr);
       gap:12px;
     }
 
@@ -80,13 +79,45 @@
     }
 
     .stat-value{
-      font-size:1.45rem;
+      font-size:1.35rem;
       font-weight:700;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    .tab-btn{
+      width:auto;
+      padding:10px 14px;
+      background:#202938;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:999px;
+      cursor:pointer;
+    }
+
+    .tab-btn.active{
+      background:var(--accent);
+      color:#07120f;
+      border-color:transparent;
+      font-weight:700;
+    }
+
+    .tab-section{
+      display:none;
+    }
+
+    .tab-section.active{
+      display:block;
     }
 
     .layout{
       display:grid;
-      grid-template-columns:1.12fr .88fr;
+      grid-template-columns:1.08fr .92fr;
       gap:20px;
     }
 
@@ -120,12 +151,11 @@
       font-weight:400;
     }
 
-    .card-content{
+    .card-content,.panel{
       padding:18px;
     }
 
     .panel{
-      padding:18px;
       margin-bottom:20px;
     }
 
@@ -142,6 +172,12 @@
 
     .form-grid.full{
       grid-template-columns:1fr;
+    }
+
+    .three-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
     }
 
     label{
@@ -190,13 +226,13 @@
       border:1px solid #5c2b31;
     }
 
-    .task-list,.workout-list{
+    .task-list,.workout-list,.template-list,.review-list{
       display:grid;
       gap:12px;
       margin-top:14px;
     }
 
-    .task,.workout{
+    .task,.workout,.template-item,.review-item{
       background:var(--panel-2);
       border:1px solid var(--border);
       border-radius:14px;
@@ -210,7 +246,7 @@
       align-items:flex-start;
     }
 
-    .task h3,.workout h3{
+    .task h3,.workout h3,.template-item h3,.review-item h3{
       margin:0 0 6px;
       font-size:1rem;
     }
@@ -313,16 +349,24 @@
 
     .due-soon{
       color:#ffd18a;
+      font-weight:600;
     }
 
     .overdue{
       color:#ff9a94;
+      font-weight:600;
     }
 
-    @media (max-width: 920px){
-      .layout{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,1fr)}
-      .form-grid{grid-template-columns:1fr}
+    .today-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:20px;
+    }
+
+    @media (max-width: 980px){
+      .layout,.today-grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(3,1fr)}
+      .form-grid,.three-grid{grid-template-columns:1fr}
     }
 
     @media (max-width: 560px){
@@ -337,11 +381,15 @@
   <div class="app">
     <section class="hero">
       <h1>Operator OS</h1>
-      <p>Your personal command center for tasks, workouts, priorities, and momentum.</p>
+      <p>Your personal command center for recurring routines, daily execution, and reviews.</p>
 
       <div class="stats">
         <div class="stat">
-          <div class="stat-label">Open Tasks</div>
+          <div class="stat-label">Today Open</div>
+          <div class="stat-value" id="todayOpenCount">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">All Open</div>
           <div class="stat-value" id="openTasks">0</div>
         </div>
         <div class="stat">
@@ -349,11 +397,11 @@
           <div class="stat-value" id="completedTasks">0</div>
         </div>
         <div class="stat">
-          <div class="stat-label">High Priority</div>
-          <div class="stat-value" id="highTasks">0</div>
+          <div class="stat-label">Templates</div>
+          <div class="stat-value" id="templateCount">0</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Workouts Logged</div>
+          <div class="stat-label">Workouts</div>
           <div class="stat-value" id="workoutCount">0</div>
         </div>
         <div class="stat">
@@ -364,170 +412,388 @@
 
       <div class="top-actions">
         <button onclick="seedDemoData()">Load Demo Data</button>
+        <button class="secondary-btn" onclick="generateRecurringTasks()">Generate Recurring Tasks</button>
         <button class="danger-btn" onclick="clearAllData()">Clear All Data</button>
       </div>
     </section>
 
-    <div class="layout">
-      <div>
-        <details class="card" open>
-          <summary>
-            <span>Add Task</span>
-            <span class="summary-right">Create priority-ranked tasks</span>
-          </summary>
-          <div class="card-content">
-            <div class="form-grid">
-              <div>
-                <label for="taskTitle">Task title</label>
-                <input id="taskTitle" placeholder="Finish Etsy draft" />
-              </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="setTab('today')">Today</button>
+      <button class="tab-btn" onclick="setTab('planner')">Planner</button>
+      <button class="tab-btn" onclick="setTab('templates')">Template Library</button>
+      <button class="tab-btn" onclick="setTab('weekly')">Weekly Review</button>
+      <button class="tab-btn" onclick="setTab('monthly')">Monthly Review</button>
+    </div>
 
-              <div>
-                <label for="taskOutlet">Outlet</label>
-                <select id="taskOutlet">
-                  <option>Etsy</option>
-                  <option>AI Services</option>
-                  <option>Content</option>
-                  <option>Fitness</option>
-                  <option>Personal</option>
-                  <option>School</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="taskDueDate">Due date</label>
-                <input id="taskDueDate" type="date" />
-              </div>
-
-              <div>
-                <label for="taskImpact">Impact (1-5)</label>
-                <select id="taskImpact">
-                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="taskUrgency">Urgency (1-5)</label>
-                <select id="taskUrgency">
-                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="taskRevenue">Revenue Value (1-5)</label>
-                <select id="taskRevenue">
-                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="taskEffort">Effort (1-5)</label>
-                <select id="taskEffort">
-                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="taskStatus">Starting status</label>
-                <select id="taskStatus">
-                  <option value="open" selected>Open</option>
-                  <option value="done">Completed</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-grid full" style="margin-top:12px;">
-              <div>
-                <label for="taskNotes">Notes</label>
-                <textarea id="taskNotes" placeholder="Anything important about this task..."></textarea>
-              </div>
-            </div>
-
-            <div style="margin-top:12px;">
-              <button onclick="addTask()">Save Task</button>
-            </div>
+    <section id="tab-today" class="tab-section active">
+      <div class="today-grid">
+        <div>
+          <div class="panel">
+            <h2 class="section-title">Today Dashboard</h2>
+            <div class="meta" id="todayDateLabel"></div>
+            <div class="divider"></div>
+            <div id="todayPriorityList" class="task-list"></div>
           </div>
-        </details>
+        </div>
 
-        <details class="card" open>
-          <summary>
-            <span>Task List</span>
-            <span class="summary-right">Filter and manage tasks</span>
-          </summary>
-          <div class="card-content">
-            <div class="filters" id="outletFilters"></div>
-            <div class="filters" id="statusFilters"></div>
-            <div id="taskList" class="task-list"></div>
-          </div>
-        </details>
-      </div>
-
-      <div>
-        <details class="card" open>
-          <summary>
-            <span>Log Workout</span>
-            <span class="summary-right">Track sessions quickly</span>
-          </summary>
-          <div class="card-content">
-            <div class="form-grid">
-              <div>
-                <label for="workoutType">Workout type</label>
-                <input id="workoutType" placeholder="Back + Biceps" />
+        <div>
+          <div class="panel">
+            <h2 class="section-title">Today Summary</h2>
+            <div class="review-list">
+              <div class="review-item">
+                <h3>Top 3 Focus</h3>
+                <div id="topThreeList" class="meta"></div>
               </div>
-
-              <div>
-                <label for="workoutDuration">Minutes</label>
-                <input id="workoutDuration" type="number" placeholder="60" />
+              <div class="review-item">
+                <h3>Recurring Ready</h3>
+                <div id="recurringSummary" class="meta"></div>
+              </div>
+              <div class="review-item">
+                <h3>Workout Momentum</h3>
+                <div id="todayWorkoutSummary" class="meta"></div>
               </div>
             </div>
-
-            <div class="form-grid full" style="margin-top:12px;">
-              <div>
-                <label for="workoutNotes">Workout notes</label>
-                <textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea>
-              </div>
-            </div>
-
-            <div style="margin-top:12px;">
-              <button onclick="addWorkout()">Save Workout</button>
-            </div>
-          </div>
-        </details>
-
-        <details class="card" open>
-          <summary>
-            <span>Workout Log</span>
-            <span class="summary-right">Recent entries</span>
-          </summary>
-          <div class="card-content">
-            <div id="workoutList" class="workout-list"></div>
-          </div>
-        </details>
-
-        <div class="panel">
-          <h2 class="section-title">Priority Formula</h2>
-          <div class="meta">
-            Score = (Impact × 2) + Urgency + Revenue Value - Effort
-          </div>
-          <div class="divider"></div>
-          <div class="small">
-            This keeps high-leverage tasks above random busywork and gives you a fast way to decide what matters first. 
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section id="tab-planner" class="tab-section">
+      <div class="layout">
+        <div>
+          <details class="card" open>
+            <summary>
+              <span>Add Task</span>
+              <span class="summary-right">One-off or generated tasks</span>
+            </summary>
+            <div class="card-content">
+              <div class="form-grid">
+                <div>
+                  <label for="taskTitle">Task title</label>
+                  <input id="taskTitle" placeholder="Finish Etsy draft" />
+                </div>
+
+                <div>
+                  <label for="taskOutlet">Outlet</label>
+                  <select id="taskOutlet">
+                    <option>Etsy</option>
+                    <option>AI Services</option>
+                    <option>Content</option>
+                    <option>Fitness</option>
+                    <option>Personal</option>
+                    <option>School</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="taskDueDate">Due date</label>
+                  <input id="taskDueDate" type="date" />
+                </div>
+
+                <div>
+                  <label for="taskImpact">Impact (1-5)</label>
+                  <select id="taskImpact">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="taskUrgency">Urgency (1-5)</label>
+                  <select id="taskUrgency">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="taskRevenue">Revenue Value (1-5)</label>
+                  <select id="taskRevenue">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="taskEffort">Effort (1-5)</label>
+                  <select id="taskEffort">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="taskStatus">Starting status</label>
+                  <select id="taskStatus">
+                    <option value="open" selected>Open</option>
+                    <option value="done">Completed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid full" style="margin-top:12px;">
+                <div>
+                  <label for="taskNotes">Notes</label>
+                  <textarea id="taskNotes" placeholder="Anything important about this task..."></textarea>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <button onclick="addTask()">Save Task</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="card" open>
+            <summary>
+              <span>Task List</span>
+              <span class="summary-right">Filter and manage tasks</span>
+            </summary>
+            <div class="card-content">
+              <div class="filters" id="outletFilters"></div>
+              <div class="filters" id="statusFilters"></div>
+              <div id="taskList" class="task-list"></div>
+            </div>
+          </details>
+        </div>
+
+        <div>
+          <details class="card" open>
+            <summary>
+              <span>Log Workout</span>
+              <span class="summary-right">Track sessions quickly</span>
+            </summary>
+            <div class="card-content">
+              <div class="form-grid">
+                <div>
+                  <label for="workoutType">Workout type</label>
+                  <input id="workoutType" placeholder="Back + Biceps" />
+                </div>
+
+                <div>
+                  <label for="workoutDuration">Minutes</label>
+                  <input id="workoutDuration" type="number" placeholder="60" />
+                </div>
+              </div>
+
+              <div class="form-grid full" style="margin-top:12px;">
+                <div>
+                  <label for="workoutNotes">Workout notes</label>
+                  <textarea id="workoutNotes" placeholder="PRs, exercises, how you felt..."></textarea>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <button onclick="addWorkout()">Save Workout</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="card" open>
+            <summary>
+              <span>Workout Log</span>
+              <span class="summary-right">Recent entries</span>
+            </summary>
+            <div class="card-content">
+              <div id="workoutList" class="workout-list"></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-templates" class="tab-section">
+      <div class="layout">
+        <div>
+          <details class="card" open>
+            <summary>
+              <span>Create Template</span>
+              <span class="summary-right">Reusable recurring task</span>
+            </summary>
+            <div class="card-content">
+              <div class="form-grid">
+                <div>
+                  <label for="templateTitle">Template title</label>
+                  <input id="templateTitle" placeholder="Batch 3 content posts" />
+                </div>
+
+                <div>
+                  <label for="templateOutlet">Outlet</label>
+                  <select id="templateOutlet">
+                    <option>Content</option>
+                    <option>Etsy</option>
+                    <option>AI Services</option>
+                    <option>Fitness</option>
+                    <option>Personal</option>
+                    <option>School</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateRecurrence">Recurrence</label>
+                  <select id="templateRecurrence">
+                    <option>Daily</option>
+                    <option>Weekdays</option>
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                    <option>Often / Manual</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateDefaultDueMode">Default due mode</label>
+                  <select id="templateDefaultDueMode">
+                    <option value="today">Today</option>
+                    <option value="tomorrow">Tomorrow</option>
+                    <option value="next7">Within 7 days</option>
+                    <option value="none">No automatic due date</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateImpact">Impact (1-5)</label>
+                  <select id="templateImpact">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateUrgency">Urgency (1-5)</label>
+                  <select id="templateUrgency">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateRevenue">Revenue Value (1-5)</label>
+                  <select id="templateRevenue">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="templateEffort">Effort (1-5)</label>
+                  <select id="templateEffort">
+                    <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid full" style="margin-top:12px;">
+                <div>
+                  <label for="templateNotes">Template notes</label>
+                  <textarea id="templateNotes" placeholder="Use for repeat content, workouts, admin, etc."></textarea>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <button onclick="addTemplate()">Save Template</button>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div>
+          <details class="card" open>
+            <summary>
+              <span>Template Library</span>
+              <span class="summary-right">One-click task generation</span>
+            </summary>
+            <div class="card-content">
+              <div id="templateList" class="template-list"></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-weekly" class="tab-section">
+      <div class="layout">
+        <div class="panel">
+          <h2 class="section-title">Weekly Review</h2>
+          <div class="form-grid">
+            <div>
+              <label for="weeklyWeekLabel">Week label</label>
+              <input id="weeklyWeekLabel" placeholder="Week of Apr 10, 2026" />
+            </div>
+            <div>
+              <label for="weeklyWins">Wins</label>
+              <input id="weeklyWins" placeholder="What went well?" />
+            </div>
+          </div>
+
+          <div class="form-grid full" style="margin-top:12px;">
+            <div>
+              <label for="weeklyBlockers">Blockers</label>
+              <textarea id="weeklyBlockers" placeholder="What got in the way?"></textarea>
+            </div>
+            <div>
+              <label for="weeklyNextFocus">Next focus</label>
+              <textarea id="weeklyNextFocus" placeholder="What are you focusing on next week?"></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button onclick="saveWeeklyReview()">Save Weekly Review</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="section-title">Saved Weekly Reviews</h2>
+          <div id="weeklyReviewList" class="review-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-monthly" class="tab-section">
+      <div class="layout">
+        <div class="panel">
+          <h2 class="section-title">Monthly Review</h2>
+          <div class="form-grid">
+            <div>
+              <label for="monthlyMonth">Month</label>
+              <input id="monthlyMonth" type="month" />
+            </div>
+            <div>
+              <label for="monthlyHighlight">Main highlight</label>
+              <input id="monthlyHighlight" placeholder="Biggest win of the month" />
+            </div>
+          </div>
+
+          <div class="form-grid full" style="margin-top:12px;">
+            <div>
+              <label for="monthlyLessons">Lessons</label>
+              <textarea id="monthlyLessons" placeholder="What did you learn?"></textarea>
+            </div>
+            <div>
+              <label for="monthlyNextMonth">Next month focus</label>
+              <textarea id="monthlyNextMonth" placeholder="What matters next month?"></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button onclick="saveMonthlyReview()">Save Monthly Review</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="section-title">Saved Monthly Reviews</h2>
+          <div id="monthlyReviewList" class="review-list"></div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    const STORAGE_KEY = "operatorOSDataV3";
+    const STORAGE_KEY = "operatorOSDataV4";
 
     let state = {
       tasks: [],
       workouts: [],
+      templates: [],
+      weeklyReviews: [],
+      monthlyReviews: [],
       filters: {
         outlet: "All",
         status: "Open"
-      }
+      },
+      activeTab: "today"
     };
 
     function safeLoad() {
@@ -538,7 +804,11 @@
           state = {
             tasks: parsed.tasks || [],
             workouts: parsed.workouts || [],
-            filters: parsed.filters || { outlet: "All", status: "Open" }
+            templates: parsed.templates || [],
+            weeklyReviews: parsed.weeklyReviews || [],
+            monthlyReviews: parsed.monthlyReviews || [],
+            filters: parsed.filters || { outlet: "All", status: "Open" },
+            activeTab: parsed.activeTab || "today"
           };
         }
       } catch (error) {
@@ -554,6 +824,25 @@
       }
     }
 
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function todayString() {
+      return new Date().toISOString().split("T")[0];
+    }
+
+    function getDateOffset(days) {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split("T")[0];
+    }
+
     function getPriorityLabel(score) {
       if (score >= 10) return "High";
       if (score >= 7) return "Medium";
@@ -565,13 +854,41 @@
       const today = new Date();
       today.setHours(0,0,0,0);
       const due = new Date(dateString + "T00:00:00");
-
       const diff = Math.round((due - today) / (1000 * 60 * 60 * 24));
 
       if (diff < 0) return '<span class="overdue">Overdue</span>';
       if (diff === 0) return '<span class="due-soon">Due today</span>';
       if (diff === 1) return '<span class="due-soon">Due tomorrow</span>';
-      return 'Due in ' + diff + ' days';
+      return '<span>Due in ' + diff + ' days</span>';
+    }
+
+    function setTab(tabName) {
+      state.activeTab = tabName;
+      safeSave();
+      document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById("tab-" + tabName).classList.add("active");
+      [...document.querySelectorAll(".tab-btn")].find(btn => btn.textContent.toLowerCase().includes(tabName.replace("-", " ")))?.classList.add("active");
+    }
+
+    function restoreTab() {
+      document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      const tab = document.getElementById("tab-" + state.activeTab);
+      if (tab) tab.classList.add("active");
+      const buttons = document.querySelectorAll(".tab-btn");
+      buttons.forEach(btn => {
+        const text = btn.textContent.trim().toLowerCase();
+        if (
+          (state.activeTab === "today" && text === "today") ||
+          (state.activeTab === "planner" && text === "planner") ||
+          (state.activeTab === "templates" && text === "template library") ||
+          (state.activeTab === "weekly" && text === "weekly review") ||
+          (state.activeTab === "monthly" && text === "monthly review")
+        ) {
+          btn.classList.add("active");
+        }
+      });
     }
 
     function addTask() {
@@ -605,7 +922,8 @@
         notes,
         score,
         priority,
-        done: status === "done"
+        done: status === "done",
+        sourceTemplateId: null
       });
 
       safeSave();
@@ -627,7 +945,8 @@
         id: Date.now(),
         type,
         duration: duration || "0",
-        notes
+        notes,
+        createdAt: new Date().toISOString()
       });
 
       safeSave();
@@ -635,265 +954,84 @@
       clearWorkoutForm();
     }
 
-    function toggleTaskDone(id) {
-      const task = state.tasks.find(t => t.id === id);
-      if (!task) return;
-      task.done = !task.done;
-      safeSave();
-      renderAll();
-    }
+    function addTemplate() {
+      const title = document.getElementById("templateTitle").value.trim();
+      const outlet = document.getElementById("templateOutlet").value;
+      const recurrence = document.getElementById("templateRecurrence").value;
+      const defaultDueMode = document.getElementById("templateDefaultDueMode").value;
+      const impact = Number(document.getElementById("templateImpact").value);
+      const urgency = Number(document.getElementById("templateUrgency").value);
+      const revenue = Number(document.getElementById("templateRevenue").value);
+      const effort = Number(document.getElementById("templateEffort").value);
+      const notes = document.getElementById("templateNotes").value.trim();
 
-    function deleteTask(id) {
-      state.tasks = state.tasks.filter(task => task.id !== id);
-      safeSave();
-      renderAll();
-    }
-
-    function deleteWorkout(id) {
-      state.workouts = state.workouts.filter(workout => workout.id !== id);
-      safeSave();
-      renderAll();
-    }
-
-    function clearTaskForm() {
-      document.getElementById("taskTitle").value = "";
-      document.getElementById("taskDueDate").value = "";
-      document.getElementById("taskNotes").value = "";
-      document.getElementById("taskImpact").value = "3";
-      document.getElementById("taskUrgency").value = "3";
-      document.getElementById("taskRevenue").value = "3";
-      document.getElementById("taskEffort").value = "3";
-      document.getElementById("taskStatus").value = "open";
-      document.getElementById("taskOutlet").value = "Etsy";
-    }
-
-    function clearWorkoutForm() {
-      document.getElementById("workoutType").value = "";
-      document.getElementById("workoutDuration").value = "";
-      document.getElementById("workoutNotes").value = "";
-    }
-
-    function clearAllData() {
-      const confirmed = confirm("Clear all tasks and workouts?");
-      if (!confirmed) return;
-      state = {
-        tasks: [],
-        workouts: [],
-        filters: {
-          outlet: "All",
-          status: "Open"
-        }
-      };
-      safeSave();
-      renderAll();
-    }
-
-    function setOutletFilter(outlet) {
-      state.filters.outlet = outlet;
-      safeSave();
-      renderAll();
-    }
-
-    function setStatusFilter(status) {
-      state.filters.status = status;
-      safeSave();
-      renderAll();
-    }
-
-    function getFilteredTasks() {
-      return [...state.tasks]
-        .filter(task => {
-          const outletMatch = state.filters.outlet === "All" || task.outlet === state.filters.outlet;
-          const statusMatch =
-            state.filters.status === "All" ||
-            (state.filters.status === "Open" && !task.done) ||
-            (state.filters.status === "Completed" && task.done);
-          return outletMatch && statusMatch;
-        })
-        .sort((a, b) => {
-          if (a.done !== b.done) return a.done - b.done;
-          return b.score - a.score;
-        });
-    }
-
-    function renderStats() {
-      const open = state.tasks.filter(t => !t.done).length;
-      const completed = state.tasks.filter(t => t.done).length;
-      const high = state.tasks.filter(t => !t.done && t.priority === "High").length;
-      const top = state.tasks.length ? Math.max(...state.tasks.map(t => t.score)) : 0;
-
-      document.getElementById("openTasks").textContent = open;
-      document.getElementById("completedTasks").textContent = completed;
-      document.getElementById("highTasks").textContent = high;
-      document.getElementById("workoutCount").textContent = state.workouts.length;
-      document.getElementById("topScore").textContent = top;
-    }
-
-    function renderOutletFilters() {
-      const container = document.getElementById("outletFilters");
-      const outlets = ["All", ...new Set(state.tasks.map(task => task.outlet))];
-
-      container.innerHTML = outlets.map(outlet => `
-        <button
-          class="filter-chip ${state.filters.outlet === outlet ? 'active' : ''}"
-          onclick="setOutletFilter('${outlet.replace(/'/g, "\\'")}')"
-        >${outlet}</button>
-      `).join("");
-    }
-
-    function renderStatusFilters() {
-      const container = document.getElementById("statusFilters");
-      const statuses = ["Open", "Completed", "All"];
-
-      container.innerHTML = statuses.map(status => `
-        <button
-          class="filter-chip ${state.filters.status === status ? 'active' : ''}"
-          onclick="setStatusFilter('${status}')"
-        >${status}</button>
-      `).join("");
-    }
-
-    function renderTasks() {
-      const taskList = document.getElementById("taskList");
-      const filteredTasks = getFilteredTasks();
-
-      if (!filteredTasks.length) {
-        taskList.innerHTML = '<div class="empty">No tasks match your current filters.</div>';
+      if (!title) {
+        alert("Please enter a template title.");
         return;
       }
 
-      taskList.innerHTML = filteredTasks.map(task => `
-        <div class="task ${task.done ? 'completed-task' : ''}">
-          <div class="row">
-            <div>
-              <h3>${task.title}</h3>
-              <div class="meta">Outlet: ${task.outlet}${task.dueDate ? " • Due: " + task.dueDate : ""}</div>
-              <div class="meta">${formatDueStatus(task.dueDate, task.done)}</div>
-            </div>
-            <span class="badge ${task.done ? 'done' : task.priority.toLowerCase()}">${task.done ? 'Done' : task.priority}</span>
-          </div>
+      state.templates.unshift({
+        id: Date.now(),
+        title,
+        outlet,
+        recurrence,
+        defaultDueMode,
+        impact,
+        urgency,
+        revenue,
+        effort,
+        notes,
+        lastGeneratedDate: null
+      });
 
-          <div class="meta">
-            Score: ${task.score} • Impact: ${task.impact} • Urgency: ${task.urgency} • Revenue: ${task.revenue} • Effort: ${task.effort}
-          </div>
-
-          ${task.notes ? `<div class="pill">${task.notes}</div>` : ""}
-
-          <div class="checkbox-row">
-            <input type="checkbox" ${task.done ? "checked" : ""} onchange="toggleTaskDone(${task.id})" />
-            <span class="small">${task.done ? "Completed" : "Mark as completed"}</span>
-          </div>
-
-          <div class="button-row" style="margin-top:10px;">
-            <button class="secondary-btn" onclick="toggleTaskDone(${task.id})">${task.done ? "Reopen" : "Complete"}</button>
-            <button class="danger-btn" onclick="deleteTask(${task.id})">Delete</button>
-          </div>
-        </div>
-      `).join("");
+      safeSave();
+      renderAll();
+      clearTemplateForm();
     }
 
-    function renderWorkouts() {
-      const workoutList = document.getElementById("workoutList");
-      if (!state.workouts.length) {
-        workoutList.innerHTML = '<div class="empty">No workouts logged yet.</div>';
-        return;
-      }
-
-      workoutList.innerHTML = state.workouts.map(workout => `
-        <div class="workout">
-          <div class="row">
-            <div>
-              <h3>${workout.type}</h3>
-              <div class="meta">Duration: ${workout.duration} min</div>
-            </div>
-            <span class="badge low">Logged</span>
-          </div>
-
-          ${workout.notes ? `<div class="pill">${workout.notes}</div>` : ""}
-
-          <div class="button-row" style="margin-top:10px;">
-            <button class="danger-btn" onclick="deleteWorkout(${workout.id})">Delete</button>
-          </div>
-        </div>
-      `).join("");
+    function getDueDateFromMode(mode) {
+      if (mode === "today") return todayString();
+      if (mode === "tomorrow") return getDateOffset(1);
+      if (mode === "next7") return getDateOffset(7);
+      return "";
     }
 
-    function seedDemoData() {
-      state.tasks = [
-        {
-          id: Date.now() + 1,
-          title: "Finish Etsy wellness planner listing",
-          outlet: "Etsy",
-          dueDate: "2026-04-10",
-          impact: 5,
-          urgency: 4,
-          revenue: 5,
-          effort: 2,
-          notes: "Need title, thumbnails, and description cleanup.",
-          score: 17,
-          priority: "High",
-          done: false
-        },
-        {
-          id: Date.now() + 2,
-          title: "Send 5 automation outreach messages",
-          outlet: "AI Services",
-          dueDate: "2026-04-09",
-          impact: 5,
-          urgency: 5,
-          revenue: 5,
-          effort: 3,
-          notes: "Prioritize local businesses and agencies.",
-          score: 17,
-          priority: "High",
-          done: false
-        },
-        {
-          id: Date.now() + 3,
-          title: "Batch 3 short-form content ideas",
-          outlet: "Content",
-          dueDate: "2026-04-12",
-          impact: 3,
-          urgency: 3,
-          revenue: 3,
-          effort: 2,
-          notes: "Focus on AI + business automation hooks.",
-          score: 10,
-          priority: "High",
-          done: true
-        }
-      ];
+    function createTaskFromTemplate(templateId) {
+      const template = state.templates.find(t => t.id === templateId);
+      if (!template) return;
 
-      state.workouts = [
-        {
-          id: Date.now() + 4,
-          type: "Back + Biceps",
-          duration: "60",
-          notes: "Rows, pulldowns, curls, core finisher."
-        },
-        {
-          id: Date.now() + 5,
-          type: "Kettlebell Flow",
-          duration: "25",
-          notes: "Mobility and conditioning."
-        }
-      ];
+      const score = (template.impact * 2) + template.urgency + template.revenue - template.effort;
+      const priority = getPriorityLabel(score);
 
-      state.filters = { outlet: "All", status: "Open" };
+      state.tasks.unshift({
+        id: Date.now(),
+        title: template.title,
+        outlet: template.outlet,
+        dueDate: getDueDateFromMode(template.defaultDueMode),
+        impact: template.impact,
+        urgency: template.urgency,
+        revenue: template.revenue,
+        effort: template.effort,
+        notes: template.notes,
+        score,
+        priority,
+        done: false,
+        sourceTemplateId: template.id
+      });
+
+      template.lastGeneratedDate = todayString();
       safeSave();
       renderAll();
     }
 
-    function renderAll() {
-      renderStats();
-      renderOutletFilters();
-      renderStatusFilters();
-      renderTasks();
-      renderWorkouts();
-    }
+    function shouldGenerateToday(template) {
+      const today = new Date();
+      const day = today.getDay();
+      const todayVal = todayString();
 
-    safeLoad();
-    renderAll();
-  </script>
-</body>
-</html>
+      if (template.lastGeneratedDate === todayVal) return false;
+      if (template.recurrence === "Daily") return true;
+      if (template.recurrence === "Weekdays") return day >= 1 && day <= 5;
+      if (template.recurrence === "Weekly") return day === 1;
+      if (template.recurrence === "Monthly") return today.getDate() === 1;
+      return 
